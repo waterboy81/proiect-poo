@@ -1,0 +1,4 @@
+﻿  proiect_poo.cpp
+C:\Users\Adminn\source\repos\proiect_proo\proiect_poo\proiect_poo.cpp(5,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\Adminn\source\repos\proiect_proo\proiect_poo\proiect_poo.cpp(11,5): warning C4551: function call missing argument list
+  proiect_poo.vcxproj -> C:\Users\Adminn\source\repos\proiect_proo\Debug\proiect_poo.exe
