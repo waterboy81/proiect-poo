@@ -139,10 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="proiect_poo.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Coloana.h" />
+    <ClInclude Include="Constraints.h" />
+    <ClInclude Include="Functii.h" />
+    <ClInclude Include="Table.h" />
     <ClInclude Include="menu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Comenzi_consola.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

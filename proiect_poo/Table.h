@@ -1,0 +1,119 @@
+#pragma once
+#include <iostream>
+#include <vector>
+#include <string>
+#include "Coloana.h"
+using namespace std;
+
+
+class Table
+{
+public:
+
+	string nume_tabela = "";
+	int nr_coloane = 0;
+	//coloana* coloane_tabela = NULL; //->fiecare tabela are un numar de coloane
+									//->a carei initializare esta responsabil. clasei coloane
+
+	vector <coloana> coloane_tabela;
+
+	Table() {}
+
+	Table(string nume_tabela, int nr_coloane, vector<Table>& lista_tabele)
+	{
+
+		int ok = 1;          //verificare cu tabele deja existente / conditia {if not exist}
+
+		if (lista_tabele.size() > 0)
+		{
+			//size_t pentru warning de signed/unsigned (iterators)
+			for (size_t i = 0; i < lista_tabele.size(); i++) {
+				if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
+				{
+					ok = 0;
+				}
+			}
+		}
+
+		if (ok == 1)
+		{
+			this->nume_tabela = nume_tabela;
+			this->nr_coloane = nr_coloane;
+
+		}
+
+		else //cazul cand numele tabelei nu corespunde bazei de date
+		{
+			this->nr_coloane = nr_coloane;
+			throw exception("constructor Table -> Numele introdus este folosit deja");
+		}
+
+		lista_tabele.push_back(*this);
+
+	}
+
+
+	Table(string nume_tabela, int nr_coloane, vector<Table>& lista_tabele, vector<coloana>& c_tabela)
+	{
+
+		int ok = 1;
+
+		if (lista_tabele.size() > 0)
+		{
+			for (size_t i = 0; i < lista_tabele.size(); i++) {
+				if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
+				{
+					ok = 0;
+				}
+			}
+		}
+
+
+		if (ok == 1)
+		{
+			this->nume_tabela = nume_tabela;
+			this->nr_coloane = nr_coloane;
+		}
+
+		else
+		{
+			this->nr_coloane = nr_coloane;
+
+			throw exception("constructor Table -> Numele introdus este folosit deja");
+		}
+
+		//inventie Iulia
+
+		vector<coloana>::iterator it; //daca nici nu iterator nu merge, ma las de facultate
+		for (it = c_tabela.begin(); it < c_tabela.end(); it++)
+		{
+			this->coloane_tabela.push_back(*it);    //.at() face o verificare de out-of-range 
+													//in plus fata de [] ->nu ti crapa memory macar
+		}
+
+		lista_tabele.push_back(*this);
+
+	}
+
+	~Table()
+	{
+
+	}
+
+	friend ostream& operator<<(ostream&, Table);
+};
+ostream& operator<<(ostream& out, Table t)
+{
+
+	cout << "Nume tabel=";
+	out << t.nume_tabela << endl;
+	cout << "Numarul de coloane=";
+	out << t.nr_coloane << endl;
+	for (int i = 0; i < t.nr_coloane; i++)
+	{
+		out << t.coloane_tabela[i];
+	}
+
+	return out;
+
+}
