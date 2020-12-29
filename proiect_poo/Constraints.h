@@ -7,11 +7,38 @@ using namespace std;
 
 class constraints
 {
-public:
-
+private:
 	string type = "";
 	string val_predefinita = "";
 	int size = 0;
+public:
+
+	string getType()
+	{
+		return type;
+	}
+	void setType(string type)
+	{
+		this->type = type;
+	}
+
+	string getVal_predefinita()
+	{
+		return val_predefinita;
+	}
+	void setVal_predefinita(string val_predefinita)
+	{
+		this->val_predefinita = val_predefinita;
+	}
+
+	int getSize()
+	{
+		return size;
+	}
+	void setSize(int size)
+	{
+		this->size = size;
+	}
 
 	constraints() {}
 

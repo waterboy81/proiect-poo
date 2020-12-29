@@ -1,4 +1,4 @@
 ﻿  Main.cpp
-C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Comenzi_SGBD.h(140,31): warning C4018: '<': signed/unsigned mismatch
-C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Comenzi_SGBD.h(190,31): warning C4018: '<': signed/unsigned mismatch
-  proiect_poo.vcxproj -> C:\Users\pc\Documents\GitHub\proiect-poo\Debug\proiect_poo.exe
+C:\Users\Adminn\Documents\GitHub\proiect-poo\proiect_poo\Comenzi_SGBD.h(140,31): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Adminn\Documents\GitHub\proiect-poo\proiect_poo\Comenzi_SGBD.h(190,31): warning C4018: '<': signed/unsigned mismatch
+  proiect_poo.vcxproj -> C:\Users\Adminn\Documents\GitHub\proiect-poo\Debug\proiect_poo.exe

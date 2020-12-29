@@ -23,8 +23,8 @@ void display_list()
 
 	for (size_t i = 0; i < lista_tabele.size(); i++)
 	{
-
-		cout << i << " ." << lista_tabele[i].nume_tabela << " " << endl;
+	
+		cout << i << " ." << lista_tabele[i].getNume_tabela() << " " << endl;
 	}
 
 	cout << endl;
@@ -37,7 +37,7 @@ void drop_table(string comanda, vector <Table>& lista_tabele) // & salveaza modi
 	string nume_tabela = table_name(comanda);
 	for (size_t i = 0; i < lista_tabele.size(); i++)
 	{
-		if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
+		if (nume_tabela.compare(lista_tabele[i].getNume_tabela()) == 0)
 		{
 			lista_tabele.erase(lista_tabele.begin() + i);
 			ok = 1;
@@ -79,7 +79,7 @@ void display_table(string comanda, vector <Table> lista_tabele)
 	string nume_tabela = table_name(comanda);
 	for (size_t i = 0; i < lista_tabele.size(); i++)
 	{
-		if (lista_tabele[i].nume_tabela.compare(nume_tabela) == 0)
+		if (lista_tabele[i].getNume_tabela().compare(nume_tabela) == 0)
 		{
 			cout << lista_tabele[i];
 			cout << "___________________________________" << endl;
@@ -105,12 +105,12 @@ void insert_into(string comanda)
 
 		for (unsigned int i = 0; i < lista_tabele.size(); i++)
 		{
-			if (lista_tabele[i].nume_tabela == nume)
+			if (lista_tabele[i].getNume_tabela() == nume)
 			{
-				string* s = valori(comanda, lista_tabele[i].nr_coloane);
-				for (int j = 0; j < lista_tabele[i].nr_coloane; j++)
+				string* s = valori(comanda, lista_tabele[i].getNr_coloane());
+				for (int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
 				{
-					lista_tabele[i].coloane_tabela[j].add_values(s[j], 1);
+					lista_tabele[i].getColoane_tabela()[j].add_values(s[j], 1);
 				}
 
 			}
@@ -135,17 +135,17 @@ void delete_from(string comanda)
 	int ok = 0;
 	for (unsigned int i = 0; i < lista_tabele.size(); i++)
 	{
-		if (lista_tabele[i].nume_tabela == n_tabela)
+		if (lista_tabele[i].getNume_tabela() == n_tabela)
 		{
-			for (unsigned int j = 0; j < lista_tabele[i].nr_coloane; j++)
+			for (unsigned int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
 			{
-				if (lista_tabele[i].coloane_tabela[j].nume == n_coloana)
+				if (lista_tabele[i].getColoane_tabela()[j].getNume() == n_coloana)
 				{
-					for (int k = 0; k < 40 && lista_tabele[i].coloane_tabela[j].values[k] != ""; k++)
+					for (int k = 0; k < lista_tabele[i].getColoane_tabela()[j].getNb_values(); k++)
 					{
-						if (lista_tabele[i].coloane_tabela[j].values[k] == to_delete)
+						if (lista_tabele[i].getColoane_tabela()[j].getValues()[k] == to_delete)
 						{
-							lista_tabele[i].coloane_tabela[j].values[k] = lista_tabele[i].coloane_tabela[j].restrictii.val_predefinita;
+							lista_tabele[i].getColoane_tabela()[j].getValues()[k] = lista_tabele[i].getColoane_tabela()[j].getRestrictii().getVal_predefinita();
 							ok = 1;
 						}
 					}
@@ -184,15 +184,15 @@ void select_all(string comanda)
 	int ok = 0;
 	for (unsigned int i = 0; i < lista_tabele.size(); i++)
 	{
-		if (lista_tabele[i].nume_tabela == n_tabela)
+		if (lista_tabele[i].getNume_tabela() == n_tabela)
 		{
 			ok = 1;
-			for (unsigned int j = 0; j < lista_tabele[i].nr_coloane; j++)
+			for (unsigned int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
 			{
-				cout << "NUME COLOANA: " << lista_tabele[i].coloane_tabela[j].nume << endl;
-				for (int k = 0; k < 40 && lista_tabele[i].coloane_tabela[j].values[k] != ""; k++)
+				cout << "NUME COLOANA: " << lista_tabele[i].getColoane_tabela()[j].getNume() << endl;
+				for (int k = 0; k < lista_tabele[i].getColoane_tabela()[j].getNb_values(); k++)
 				{
-					cout << lista_tabele[i].coloane_tabela[j].values[k] << endl;
+					cout << lista_tabele[i].getColoane_tabela()[j].getValues()[k] << endl;
 				}
 
 				cout << endl;

@@ -8,11 +8,38 @@ using namespace std;
 
 class Table
 {
-public:
-
+private:
 	string nume_tabela = "";
 	int nr_coloane = 0;
 	vector <coloana> coloane_tabela;
+public:
+	
+	string getNume_tabela()
+	{
+		return nume_tabela;
+	}
+	void setNume_tabela(string nume_tabela)
+	{
+		this->nume_tabela = nume_tabela;
+	}
+
+	int getNr_coloane()
+	{
+		return nr_coloane;
+	}
+	void setNr_coloane(int nr_coloane)
+	{
+		this->nr_coloane = nr_coloane;
+	}
+
+	  vector <coloana>& getColoane_tabela()
+	{
+		return coloane_tabela;
+	}
+	void setColoane_tabela(vector<coloana> &coloane_tabela)
+	{
+		this->coloane_tabela = coloane_tabela;
+	}
 
 	Table() {}
 

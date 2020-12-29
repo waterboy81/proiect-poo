@@ -7,17 +7,58 @@ using namespace std;
 
 class coloana
 {
-public:
-
+private:
 	string nume;
 	constraints restrictii;
 	string values[40];
 	int nb_values = 0;
+public:
+	
+	string getNume()
+	{
+		return nume;
+	}
+	void setNume(string nume)
+	{
+		this->nume = nume;
+	}
+
+	constraints getRestrictii()
+	{
+		return restrictii;
+	}
+	void setRestrictii(constraints restrictii)
+	{
+		this->restrictii = restrictii;
+	}
+
+	string* getValues()
+	{
+		string* adresa = new string[nb_values];
+		adresa = &values[0];
+		return adresa;
+
+	}
+	void setValues(string values[40])
+	{
+		for (int i = 0; i < 40; i++)
+			this->values[i] = values[i];
+	}
+
+	int getNb_values()
+	{
+		return nb_values;
+	}
+	void setNb_values(int nb_values)
+	{
+		this->nb_values = nb_values;
+	}
+
 
 	coloana() : restrictii()
 	{
 		nume = "";
-
+		nb_values = 0;
 
 	}
 
@@ -31,6 +72,11 @@ public:
 	{
 		nume = c.nume;
 		restrictii = c.restrictii;
+		nb_values = c.nb_values;
+		for (int i = 0; i < c.nb_values; i++)
+		{
+			values[i] = c.values[i];
+		}
 	}
 
 	coloana& operator=(const coloana& c)
@@ -57,7 +103,7 @@ public:
 				{
 					values[i] = values_to_add;
 					k++;
-
+					nb_values++;
 				}
 			}
 
