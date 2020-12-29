@@ -37,6 +37,5 @@ int main()
 	}
 
 	c.close();
-
-
+	
 }

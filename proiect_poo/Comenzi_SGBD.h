@@ -23,7 +23,7 @@ void display_list()
 
 	for (size_t i = 0; i < lista_tabele.size(); i++)
 	{
-	
+
 		cout << i << " ." << lista_tabele[i].getNume_tabela() << " " << endl;
 	}
 
@@ -82,8 +82,8 @@ void display_table(string comanda, vector <Table> lista_tabele)
 		if (lista_tabele[i].getNume_tabela().compare(nume_tabela) == 0)
 		{
 			cout << lista_tabele[i];
-			cout << "___________________________________" << endl;
-			cout << "Table " << nume_tabela << " has been displayed " << endl << endl;
+			cout <<endl<< "Table " << nume_tabela << " has been displayed " << endl;
+			cout << "___________________________________" << endl << endl;
 			ok = 1;
 		}
 	}
@@ -125,19 +125,19 @@ void insert_into(string comanda)
 }
 
 
-//DELETE FROM
+//DELETE_FROM
 
 void delete_from(string comanda)
 {
 	string n_tabela = table_name(comanda);
 	string n_coloana = nume_coloana(comanda);
 	string to_delete = value(comanda);
-	int ok = 0;
+	int ok = 0; int contor = 0;
 	for (unsigned int i = 0; i < lista_tabele.size(); i++)
 	{
 		if (lista_tabele[i].getNume_tabela() == n_tabela)
 		{
-			for (unsigned int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
+			for (int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
 			{
 				if (lista_tabele[i].getColoane_tabela()[j].getNume() == n_coloana)
 				{
@@ -145,26 +145,28 @@ void delete_from(string comanda)
 					{
 						if (lista_tabele[i].getColoane_tabela()[j].getValues()[k] == to_delete)
 						{
-							lista_tabele[i].getColoane_tabela()[j].getValues()[k] = lista_tabele[i].getColoane_tabela()[j].getRestrictii().getVal_predefinita();
+							lista_tabele[i].modificare_date(k);
 							ok = 1;
+							k--;
+							contor++;
 						}
 					}
 				}
-
 			}
 		}
-
 	}
 
 	if (ok == 1)
 	{
-		cout << "Changes have been applied to table " << n_tabela << endl;
-		cout << "Valoarea " << to_delete << " a fost inlocuita cu valorea default in coloana " << n_coloana << endl;
+		cout << "Changes have been applied to table " << n_tabela << ". " << endl << contor << " rows deleted. ";
+		cout << "Inregistrarile corespondente lui -> " << to_delete << " <- au fost sterse din baza de date ." << endl;
+		cout << endl;
 	}
 
 	else {
 		cout << "ERROR from delete_from -> comanda formatata gresit sau in tabela nu exista inregistrari " << endl;
 		cout << "Detalii comanda introdusa -> nume_tabel= " << n_tabela << " nume_coloana= " << n_coloana << " valoare= " << to_delete << endl;
+		cout << endl;
 	}
 }
 
@@ -173,7 +175,46 @@ void delete_from(string comanda)
 
 //SELECT
 
-void select(string comanda) {}
+void select(string comanda)
+{
+	int nr_coloane = nr_select(comanda);
+	string* coloane_selectate = coloane_name(comanda, nr_coloane);
+	string n_tabela = table_name(comanda);
+	int ok = 0;
+	for (unsigned int i = 0; i < lista_tabele.size(); i++)
+	{
+		if (lista_tabele[i].getNume_tabela() == n_tabela)
+		{
+			ok = 1;
+			cout << "SELECT returned -> " << endl;
+			for (int t = 0; t < nr_coloane; t++)
+			{
+				for (int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
+				{
+					if (lista_tabele[i].getColoane_tabela()[j].getNume() == coloane_selectate[t])
+					{
+						cout << "NUME COLOANA: " << lista_tabele[i].getColoane_tabela()[j].getNume() << endl;
+						for (int k = 0; k < lista_tabele[i].getColoane_tabela()[j].getNb_values(); k++)
+						{
+							cout << lista_tabele[i].getColoane_tabela()[j].getValues()[k] << endl;
+						}
+
+						cout << endl;
+					}
+				}
+			}
+
+		}
+	}
+
+	if (ok == 1)
+	{
+		cout  << "Values from table " << n_tabela << " have been desplayed" << endl;
+	}
+
+	else
+		cout << "ERROR -> SELECT nu a putut identifica comenzile / tabela in baza de date" << endl;
+}
 
 
 //SELECT ALL FROM
@@ -187,11 +228,13 @@ void select_all(string comanda)
 		if (lista_tabele[i].getNume_tabela() == n_tabela)
 		{
 			ok = 1;
-			for (unsigned int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
+			cout << "SELECT ALL returned -> " << endl;
+			for (int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
 			{
 				cout << "NUME COLOANA: " << lista_tabele[i].getColoane_tabela()[j].getNume() << endl;
 				for (int k = 0; k < lista_tabele[i].getColoane_tabela()[j].getNb_values(); k++)
 				{
+					
 					cout << lista_tabele[i].getColoane_tabela()[j].getValues()[k] << endl;
 				}
 
@@ -204,13 +247,15 @@ void select_all(string comanda)
 	if (ok == 1)
 	{
 		cout << "Values from table " << n_tabela << " have been displayed" << endl;
-		cout << endl;
+		cout  << endl;
 	}
 
 	else
 	{
+		cout << "____________________________________" << endl;
 		cout << "ERROR from select_all -> tabela nu exista in baza de date sau nu exista inregistrari" << endl;
 		cout << "Detalii comanda introdusa: table_name= " << n_tabela << endl;
+		cout << endl;
 	}
 }
 
@@ -218,6 +263,52 @@ void select_all(string comanda)
 //UPDATE
 void update(string comanda)
 {
+	string n_table = table_name(comanda);
+	string n_coloana = nume_update(comanda);
+	string change = new_value(comanda);
+	string to_change = old_value(comanda);
+
+	int ok = 0; int contor = 0;
+	for (unsigned int i = 0; i < lista_tabele.size(); i++)
+	{
+		if (lista_tabele[i].getNume_tabela() == n_table)
+		{
+			ok = 1;
+			for (int j = 0; j < lista_tabele[i].getNr_coloane(); j++)
+			{
+				if (lista_tabele[i].getColoane_tabela()[j].getNume() == n_coloana) 
+				{
+					for (int k = 0; k < lista_tabele[i].getColoane_tabela()[j].getNb_values(); k++)
+					{
+						if (lista_tabele[i].getColoane_tabela()[j].getValues()[k] == to_change) 
+						{
+							lista_tabele[i].getColoane_tabela()[j].setValue(change, k);
+							contor++;
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+	if (ok == 1 && contor!=0) 
+	{
+		cout << endl << "Table " << n_table << " has been altered.";
+		cout << endl << contor << " row / rows have been updated. " << endl;
+		cout << endl;
+	}
+
+	else 
+	{
+		cout << "____________________________________" << endl;
+		cout << "ERROR: UPDATE TABLE nu a regasit tabela/ coloana sau valoarea specificata in baza de date" << endl;
+		cout << "Date introduse:"<<endl<< "nume_tabela-> " << n_table << endl;
+		cout << "nume_coloana-> " << n_coloana << endl;
+		cout << "valoare_inregistrare-> " << to_change << endl;
+		cout<<"valore_noua-> " << change << endl;
+		cout << endl;
+	}
 
 }
-#pragma once
+

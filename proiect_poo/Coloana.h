@@ -3,116 +3,30 @@
 #include <string>
 #include <vector>
 #include "Constraints.h"
+
 using namespace std;
 
 class coloana
 {
 private:
+
 	string nume;
 	constraints restrictii;
 	string values[40];
 	int nb_values = 0;
+
 	friend ostream& operator<<(ostream&, coloana);
 	friend istream& operator>>(istream& in, coloana& c);
+
 public:
-	//getteri si setteri
-	string getNume()
-	{
-		return nume;
-	}
-	void setNume(string nume)
-	{
-		this->nume = nume;
-	}
 
-	constraints getRestrictii()
-	{
-		return restrictii;
-	}
-	void setRestrictii(constraints restrictii)
-	{
-		this->restrictii = restrictii;
-	}
-
-	string* getValues()
-	{
-		string* adresa = new string[nb_values];
-		adresa = &values[0];
-		return adresa;
-
-	}
-	void setValues(string values[40])
-	{
-		for (int i = 0; i < 40; i++)
-			this->values[i] = values[i];
-	}
-
-	int getNb_values()
-	{
-		return nb_values;
-	}
-	void setNb_values(int nb_values)
-	{
-		this->nb_values = nb_values;
-	}
-	//final setteri si getteri
-	//supraincarcari pt1
-
-	bool operator!()
-	{
-		return nb_values > 0;
-	}
-	coloana operator++() 
-	{
-		this->nb_values++;
-		return *this;
-	}
-	coloana operator++(int i)
-	{
-		coloana copie = *this;
-		this->nb_values++;
-		return copie;
-	}
-	coloana operator+(int valoare)
-	{
-		coloana copie = *this;
-		copie.nb_values += valoare;
-		return copie;
-	}
-	explicit operator int()
-	{
-		return nb_values;
-	}
-	int operator()()
-	{
-		if (nume != "")
-			return nume.size();
-		else 
-			return 0;
-	}
-	int operator==(coloana& c)
-	{
-		if (this->nb_values == c.nb_values) return true;
-		else return false;
-	}
-	int operator>=(coloana& c)
-	{
-		if (this->nb_values >= c.nb_values) return true;
-		else return false;
-	}
-	//final supraincarcare pt1
 	coloana() : restrictii()
 	{
 		nume = "";
 		nb_values = 0;
-
 	}
 
-	coloana(string nume, constraints restrictii) : restrictii(restrictii), nume(nume)
-	{
-
-	}
-
+	coloana(string nume, constraints restrictii) : restrictii(restrictii), nume(nume) {}
 
 	coloana(const coloana& c)
 	{
@@ -152,7 +66,6 @@ public:
 					nb_values++;
 				}
 			}
-
 		}
 
 		if (k == 0)
@@ -161,12 +74,114 @@ public:
 		}
 	}
 
-	~coloana()
+
+	//functii acces
+
+	string getNume()
 	{
+		return nume;
 	}
 
+	void setNume(string nume)
+	{
+		this->nume = nume;
+	}
+
+	constraints getRestrictii()
+	{
+		return restrictii;
+	}
+
+	void setRestrictii(constraints restrictii)
+	{
+		this->restrictii = restrictii;
+	}
+
+	string* getValues()
+	{
+		string* adresa = new string[nb_values];
+		adresa = &values[0];
+		return adresa;
+	}
+
+	void setValues(string values[40])
+	{
+		for (int i = 0; i < 40; i++)
+			this->values[i] = values[i];
+	}
+
+	void setValue(string value, int i) 
+	{
+		this->values[i] = value;
+	}
+
+	int getNb_values()
+	{
+		return nb_values;
+	}
+
+	void setNb_values(int nb_values)
+	{
+		this->nb_values = nb_values;
+	}
+
+	//supraincarcari operatori
+
+	bool operator!()
+	{
+		return nb_values > 0;
+	}
+
+	coloana operator++() 
+	{
+		this->nb_values++;
+		return *this;
+	}
+
+	coloana operator++(int i)
+	{
+		coloana copie = *this;
+		this->nb_values++;
+		return copie;
+	}
+
+	coloana operator+(int valoare)
+	{
+		coloana copie = *this;
+		copie.nb_values += valoare;
+		return copie;
+	}
+
+	explicit operator int()
+	{
+		return nb_values;
+	}
+
+	int operator()()
+	{
+		if (nume != "")
+			return nume.size();
+		else 
+			return 0;
+	}
+
+	int operator==(coloana& c)
+	{
+		if (this->nb_values == c.nb_values) return true;
+		else return false;
+	}
+
+	int operator>=(coloana& c)
+	{
+		if (this->nb_values >= c.nb_values) return true;
+		else return false;
+	}
+
+
+	~coloana() {}
+
 };
-//supraincarcare pt2
+
 
 ostream& operator<<(ostream& out, coloana c)
 {

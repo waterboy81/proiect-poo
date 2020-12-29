@@ -103,6 +103,15 @@ string table_name(string comanda)
 
 		}
 
+		if (nr == 8)
+		{	//caz SELECT c1, c2 ...
+			string cmd = "FROM ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			string str3 = str2.substr(0, str2.find(' '));
+			return str3;
+		}
+
 		if (nr == 9)
 		{
 			string cmd = "UPDATE ";
@@ -122,6 +131,70 @@ string table_name(string comanda)
 		cout << "table_name -> nu s-a putut identifica numele tabelei" << endl;
 		return "-1";
 	}
+
+}
+
+//delete white spaces pentru anumite formatari de comanda
+void delete_spaces(string& comanda)
+{
+	comanda.erase(remove(comanda.begin(), comanda.end(), ' '), comanda.end());
+
+}
+
+//metoda numara coloanele selectate
+int nr_select(string comanda) 
+{
+	int contor = 0;
+	comanda = comanda.substr(comanda.find(" ") + 1, comanda.find("FROM") - comanda.find(" ") - 1);
+	comanda = comanda + ",";
+	delete_spaces(comanda);
+	while (comanda != "")
+	{
+		int position = comanda.find(",");
+		if (position != string::npos)
+		{
+			contor++;
+			comanda = comanda.substr(position + 1, comanda.length() - position);
+		}
+	}
+	
+	if (contor != 0) 
+	{
+		return contor;
+	}
+
+	else
+	{
+		cout << "nr_select coloane -> coloanele din comandata SELECT nu sunt bine despartite de virgula" << endl;
+		return -1;
+	}
+
+}
+
+//metoda care segmenteaza si da coloanele care se doresc din select 
+
+string* coloane_name(string comanda, int nr_coloane)
+{
+	string delimitator = ","; 
+	string cord = "FROM ";
+	string* nume = NULL;
+
+	int position = comanda.find(cord);
+	if (position != string::npos)
+	{
+		nume = new string[nr_coloane];
+		comanda = comanda.substr(comanda.find(" ") + 1, comanda.find("FROM") - comanda.find(" ") - 1);
+		comanda = comanda + delimitator;
+		delete_spaces(comanda);
+		for (int i = 0; i < nr_coloane; i++)
+		{
+			cord = comanda.substr(0, comanda.find(","));
+			nume[i] = cord;
+			comanda = comanda.substr(comanda.find(",") + 1, comanda.length() - comanda.find(",") + 1);
+		}
+	}
+
+	return nume;
 
 }
 
@@ -189,7 +262,7 @@ int nr_coloane(string comanda)
 
 		if (ok == 0)
 		{
-			throw exception("nr_coloane -> Comanda introdusa gresit | vezi restr. coloane");
+			cout << endl << "nr_coloane -> Comanda introdusa gresit | vezi restr. coloane" << endl;
 		}
 
 		return (nr_coloane + nr_coloane1 - 2) / 2;
@@ -245,7 +318,7 @@ vector <coloana> coloane_tabela(string comanda, int nr, vector <string> data)
 	{
 		//coloana* coloane_tabela = new coloana[nr]; -> imposibil sa pot salva pointeri la coloane
 													//adresa se distruge la a doua interatie
-													//din cauza op. = . 
+													//din cauza op. = . hmmmmmmmm
 
 		vector <coloana> coloane;
 		int i = 0; int j = 0;
@@ -289,11 +362,6 @@ string* valori(string comanda, int nr_coloane)
 
 }
 
-void delete_spaces(string& comanda)
-{
-	comanda.erase(remove(comanda.begin(), comanda.end(), ' '), comanda.end());
-
-}
 
 //metoda pentru delete_from care verifica corectitudineaa comenzii + numele coloanei
 string nume_coloana(string comanda)
@@ -333,6 +401,40 @@ string value(string comanda)
 		cout << "value -> valorea nu a putut fi extrasa" << endl;
 	return "-1";
 
+}
+
+//nume coloana pentru update 
+
+string nume_update(string comanda) 
+{
+	string cord = "SET ";
+	comanda = comanda.substr(comanda.find(cord) + cord.length(), comanda.find_first_of("=") - (comanda.find(cord) + cord.length()));
+	delete_spaces(comanda);
+	return comanda;
+}
+
+string new_value(string comanda) 
+{
+	string cord = "WHERE ";
+	int position = comanda.find(cord);
+	if (position != string::npos) 
+	{
+		comanda = comanda.substr(comanda.find("=") + 1, position - comanda.find("=")-1);
+		delete_spaces(comanda);
+		return comanda;
+	}
+	else 
+	{	
+		cout << "new_value -> comanda nu este formatata bine, clauza WHERE trebuie separata cel putin printr-un spatiu"<<endl;
+		return "-1";
+	}
+}
+
+string old_value(string comanda) 
+{
+	comanda = comanda.substr(comanda.rfind("=")+1, comanda.length() - comanda.rfind("="));
+	delete_spaces(comanda);
+	return comanda;
 }
 
 

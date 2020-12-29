@@ -14,80 +14,8 @@ private:
 	vector <coloana> coloane_tabela;
 	friend ostream& operator<<(ostream&, Table);
 	friend istream& operator>>(istream&, Table t);
+
 public:
-	//getteri si setteri
-	string getNume_tabela()
-	{
-		return nume_tabela;
-	}
-	void setNume_tabela(string nume_tabela)
-	{
-		this->nume_tabela = nume_tabela;
-	}
-
-	int getNr_coloane()
-	{
-		return nr_coloane;
-	}
-	void setNr_coloane(int nr_coloane)
-	{
-		this->nr_coloane = nr_coloane;
-	}
-
-	  vector <coloana>& getColoane_tabela()
-	{
-		return coloane_tabela;
-	}
-	void setColoane_tabela(vector<coloana> &coloane_tabela)
-	{
-		this->coloane_tabela = coloane_tabela;
-	}
-	//final getteri si setteri
-	//supraincarcare pt1
-	bool operator!()
-	{
-		return nr_coloane > 0;
-	}
-	Table operator++()
-	{
-		this->nr_coloane++;
-		return *this;
-	}
-	Table operator++(int i)
-	{
-		Table copie = *this;
-		this->nr_coloane++;
-		return *this;
-	}
-	Table operator+(int valoare)
-	{
-		Table copie = *this;
-		copie.nr_coloane += valoare;
-		return copie;
-	}
-	explicit operator int()
-	{
-		return nr_coloane;
-	}
-	int operator()()
-	{
-		if (nume_tabela != "")
-			return nume_tabela.size();
-		else
-			return 0;
-	}
-	int operator==(Table& t)
-	{
-		if (this->nume_tabela == t.nume_tabela) return true;
-		else return false;
-	}
-	int operator>=(Table& t)
-	{
-		if (this->nr_coloane >= t.nr_coloane) return true;
-		else return false;
-	}
-	//final supraincarcare pt 1
-
 
 	Table() {}
 
@@ -167,13 +95,121 @@ public:
 
 	}
 
+	//inventie pentru delete_from metoda de decalare
+	void modificare_date(int row)				//row->row to be deleted in table
+	{
+
+		for (int i = 0; i < nr_coloane; i++)
+		{
+			for (int j = 0; j < coloane_tabela[i].getNb_values(); j++)
+			{
+				if (j == row)
+				{
+					for (int k = j; k < coloane_tabela[i].getNb_values(); k++)
+					{
+						coloane_tabela[i].getValues()[k] = coloane_tabela[i].getValues()[k + 1];
+					}
+				}
+			}
+			coloane_tabela[i].setNb_values(coloane_tabela[i].getNb_values() - 1);
+		}
+	}
+
+	//functii acces 
+
+	string getNume_tabela()
+	{
+		return nume_tabela;
+	}
+
+	void setNume_tabela(string nume_tabela)
+	{
+		this->nume_tabela = nume_tabela;
+	}
+
+	int getNr_coloane()
+	{
+		return nr_coloane;
+	}
+
+	void setNr_coloane(int nr_coloane)
+	{
+		this->nr_coloane = nr_coloane;
+	}
+
+	vector <coloana>& getColoane_tabela()
+	{
+		return coloane_tabela;
+	}
+
+	void setColoane_tabela(vector<coloana> &coloane_tabela)
+	{
+		this->coloane_tabela = coloane_tabela;
+	}
+
+	
+	//supraincarcari operatori pt1
+	
+	bool operator!()
+	{
+		return nr_coloane > 0;
+	}
+
+	Table operator++()
+	{
+		this->nr_coloane++;
+		return *this;
+	}
+
+	Table operator++(int i)
+	{
+		Table copie = *this;
+		this->nr_coloane++;
+		return *this;
+	}
+
+	Table operator+(int valoare)
+	{
+		Table copie = *this;
+		copie.nr_coloane += valoare;
+		return copie;
+	}
+
+	explicit operator int()
+	{
+		return nr_coloane;
+	}
+
+	int operator()()
+	{
+		if (nume_tabela != "")
+			return nume_tabela.size();
+		else
+			return 0;
+	}
+
+	int operator==(Table& t)
+	{
+		if (this->nume_tabela == t.nume_tabela) return true;
+		else return false;
+	}
+
+	int operator>=(Table& t)
+	{
+		if (this->nr_coloane >= t.nr_coloane) return true;
+		else return false;
+	}
+
+	//final supraincarcare pt 1
+
 	~Table()
 	{
 
 	}
 
 };
-//supraincarcare pt2
+
+
 ostream& operator<<(ostream& out, Table t)
 {
 	cout << endl << "___________________________________" << endl;
