@@ -12,8 +12,10 @@ private:
 	constraints restrictii;
 	string values[40];
 	int nb_values = 0;
+	friend ostream& operator<<(ostream&, coloana);
+	friend istream& operator>>(istream& in, coloana& c);
 public:
-	
+	//getteri si setteri
 	string getNume()
 	{
 		return nume;
@@ -53,8 +55,52 @@ public:
 	{
 		this->nb_values = nb_values;
 	}
+	//final setteri si getteri
+	//supraincarcari pt1
 
-
+	bool operator!()
+	{
+		return nb_values > 0;
+	}
+	coloana operator++() 
+	{
+		this->nb_values++;
+		return *this;
+	}
+	coloana operator++(int i)
+	{
+		coloana copie = *this;
+		this->nb_values++;
+		return copie;
+	}
+	coloana operator+(int valoare)
+	{
+		coloana copie = *this;
+		copie.nb_values += valoare;
+		return copie;
+	}
+	explicit operator int()
+	{
+		return nb_values;
+	}
+	int operator()()
+	{
+		if (nume != "")
+			return nume.size();
+		else 
+			return 0;
+	}
+	int operator==(coloana& c)
+	{
+		if (this->nb_values == c.nb_values) return true;
+		else return false;
+	}
+	int operator>=(coloana& c)
+	{
+		if (this->nb_values >= c.nb_values) return true;
+		else return false;
+	}
+	//final supraincarcare pt1
 	coloana() : restrictii()
 	{
 		nume = "";
@@ -115,18 +161,12 @@ public:
 		}
 	}
 
-
-
-
-
-
 	~coloana()
 	{
 	}
 
-	friend ostream& operator<<(ostream&, coloana);
-
 };
+//supraincarcare pt2
 
 ostream& operator<<(ostream& out, coloana c)
 {
@@ -135,3 +175,13 @@ ostream& operator<<(ostream& out, coloana c)
 	out << c.restrictii;
 	return out;
 }
+istream& operator>>(istream& in, coloana& c)
+{
+	in >> c.nume;
+	for (int i = 0; i < 40; i++)
+		in >> c.values[i];
+	in >> c.restrictii;
+	return in;
+}
+
+

@@ -12,8 +12,10 @@ private:
 	string nume_tabela = "";
 	int nr_coloane = 0;
 	vector <coloana> coloane_tabela;
+	friend ostream& operator<<(ostream&, Table);
+	friend istream& operator>>(istream&, Table t);
 public:
-	
+	//getteri si setteri
 	string getNume_tabela()
 	{
 		return nume_tabela;
@@ -40,6 +42,52 @@ public:
 	{
 		this->coloane_tabela = coloane_tabela;
 	}
+	//final getteri si setteri
+	//supraincarcare pt1
+	bool operator!()
+	{
+		return nr_coloane > 0;
+	}
+	Table operator++()
+	{
+		this->nr_coloane++;
+		return *this;
+	}
+	Table operator++(int i)
+	{
+		Table copie = *this;
+		this->nr_coloane++;
+		return *this;
+	}
+	Table operator+(int valoare)
+	{
+		Table copie = *this;
+		copie.nr_coloane += valoare;
+		return copie;
+	}
+	explicit operator int()
+	{
+		return nr_coloane;
+	}
+	int operator()()
+	{
+		if (nume_tabela != "")
+			return nume_tabela.size();
+		else
+			return 0;
+	}
+	int operator==(Table& t)
+	{
+		if (this->nume_tabela == t.nume_tabela) return true;
+		else return false;
+	}
+	int operator>=(Table& t)
+	{
+		if (this->nr_coloane >= t.nr_coloane) return true;
+		else return false;
+	}
+	//final supraincarcare pt 1
+
 
 	Table() {}
 
@@ -124,8 +172,8 @@ public:
 
 	}
 
-	friend ostream& operator<<(ostream&, Table);
 };
+//supraincarcare pt2
 ostream& operator<<(ostream& out, Table t)
 {
 	cout << endl << "___________________________________" << endl;
@@ -142,4 +190,14 @@ ostream& operator<<(ostream& out, Table t)
 
 	return out;
 
+}
+istream& operator>>(istream& in, Table t)
+{
+	in >> t.nume_tabela;
+	in >> t.nr_coloane;
+	for (int i = 0; i < t.nr_coloane; i++)
+	{
+		in >> t.coloane_tabela[i];
+	}
+	return in;
 }

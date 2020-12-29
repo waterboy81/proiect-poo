@@ -11,8 +11,10 @@ private:
 	string type = "";
 	string val_predefinita = "";
 	int size = 0;
+	friend ostream& operator<<(ostream&, constraints);
+	friend istream& operator>>(istream& i, constraints c);
 public:
-
+	//getteri si setteri
 	string getType()
 	{
 		return type;
@@ -39,6 +41,51 @@ public:
 	{
 		this->size = size;
 	}
+	//final getteri si setteri
+	//supraincarcare pt 1
+	bool operator!()
+	{
+		return size > 0;
+	}
+	constraints operator++()
+	{
+		this->size++;
+		return *this;
+	}
+	constraints operator++(int i)
+	{
+		constraints copie = *this;
+		this->size++;
+		return copie;
+	}
+	constraints operator+(int valoare)
+	{
+		constraints copie = *this;
+		copie.size += valoare;
+		return copie;
+	}
+	explicit operator int()
+	{
+		return size;
+	}
+	int operator()()
+	{
+		if (type != "")
+			return type.size();
+		else
+			return 0;
+	}
+	int operator==(constraints& c)
+	{
+		if (this->type == c.type) return true;
+		else return false;
+	}
+	int operator>=(constraints& c)
+	{
+		if (this->size >= c.size) return true;
+		else return false;
+	}
+	//final supraincarcare pt1
 
 	constraints() {}
 
@@ -95,10 +142,9 @@ public:
 
 	}
 
-	friend ostream& operator<<(ostream&, constraints);
 };
 
-//supraincarcare <<
+//supraincarcare partea 2
 ostream& operator<<(ostream& out, constraints r)
 {
 	cout << endl;
@@ -112,4 +158,11 @@ ostream& operator<<(ostream& out, constraints r)
 	out << r.val_predefinita << " " << endl;
 
 	return out;
+}
+istream& operator>>(istream& i, constraints c)
+{
+	i >> c.type;
+	i >> c.val_predefinita;
+	i >> c.size;
+	return i;
 }
