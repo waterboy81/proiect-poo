@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <string>
 #include "Table.h"
 
 using namespace std;
@@ -9,14 +8,13 @@ using namespace std;
 
 int identificare_comanda(string comanda)
 {
-	size_t position = -1; string str2; int ok = 0; int val = 0;
-	const char* commands[7] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "INSERT INTO ", "SELECT ", "UPDATE ", "DELETE FROM" };
+	const char* commands[10] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "CREATE INDEX ", "DROP INDEX ", "INSERT INTO ", "DELETE FROM ","SELECT ALL FROM ", "SELECT ", "UPDATE " };
+	size_t position = -1;  int ok = 0; int val = -1;
 
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 10 && ok == 0; i++)
 	{
 		string define = (char*)commands[i];
 		position = comanda.find(define);
-		str2 = "";
 		if (position != 0 && ok == 0)
 		{
 			ok = 0;
@@ -24,14 +22,16 @@ int identificare_comanda(string comanda)
 		else
 		{
 			ok = 1;
+			val = i;
 		}
 
-		val = val + (1 - ok);
 	}
 
-	if (ok == 0)
+
+	if (val == -1)
 	{
-		throw exception("identifica_comanda -> Comanda introdusa gresit");
+		cout << "identificare_comanda -> Comanda introdusa gresit SAU posibilitatea ca in .txt sa fie randuri goale" << endl;
+		return -1;
 	}
 
 	else
@@ -44,36 +44,85 @@ int identificare_comanda(string comanda)
 //identifica numele tabelei in comenzile ce fac referire la numele tabelei
 string table_name(string comanda)
 {
-	string str2;
-	if (identificare_comanda(comanda) == 1)
+	int nr = identificare_comanda(comanda);
+	if (nr != -1)
 	{
-		string cmd = "DROP TABLE ";
-		size_t position = comanda.find(cmd);
-		str2 = comanda.substr(position + cmd.length());
-		return str2;
+		string str2;
+		if (nr == 1)
+		{
+			string cmd = "DROP TABLE ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			return str2;
+		}
+
+		if (nr == 0)
+		{
+			string cmd = "CREATE TABLE ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			string str3 = str2.substr(0, str2.find(' '));
+			return str3;
+		}
+
+		if (nr == 2)
+		{
+			string cmd = "DISPLAY TABLE ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			return str2;
+		}
+
+		if (nr == 5)
+		{
+			string cmd = "INSERT INTO ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			string str3 = str2.substr(0, str2.find(' '));
+			return str3;
+
+		}
+
+		if (nr == 6)
+		{
+			string cmd = "DELETE FROM ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			string str3 = str2.substr(0, str2.find(' '));
+			return str3;
+
+		}
+
+		if (nr == 7)
+		{
+			string cmd = "SELECT ALL FROM ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			string str3 = str2.substr(0, str2.find(' '));
+			return str3;
+
+		}
+
+		if (nr == 9)
+		{
+			string cmd = "UPDATE ";
+			size_t position = comanda.find(cmd);
+			str2 = comanda.substr(position + cmd.length());
+			string str3 = str2.substr(0, str2.find(' '));
+			return str3;
+
+		}
+
+		return "-1";
 	}
 
-	if (identificare_comanda(comanda) == 0)
-	{
-		string cmd = "CREATE TABLE ";
-		size_t position = comanda.find(cmd);
-		str2 = comanda.substr(position + cmd.length());
-		string str3 = str2.substr(0, str2.find(' '));
-		return str3;
-	}
-
-	if (identificare_comanda(comanda) == 2)
-	{
-		string cmd = "DISPLAY TABLE ";
-		size_t position = comanda.find(cmd);
-		str2 = comanda.substr(position + cmd.length());
-		return str2;
-	}
 
 	else
-		throw exception("table_name -> nu s-a putut identifica numele tabelei");
+	{
+		cout << "table_name -> nu s-a putut identifica numele tabelei" << endl;
+		return "-1";
+	}
 
-	//DELETE FROM =6
 }
 
 //metoda care segmenteaza comanda (caz create)
@@ -102,14 +151,17 @@ string info_coloane(string comanda)
 
 		if (ok == 0)
 		{
-			throw exception("info_coloane -> Comanda introdusa gresit");
+			cout << "info_coloane -> Comanda introdusa gresit | greseala formatare ( ) " << endl;
 		}
 
 		return str3;
 	}
 
 	else
-		throw exception("info_coloane -> Comanda introdusa gresit");
+	{
+		cout << "info_coloane -> Comanda introdusa gresit | CREATE TABLE SCRIS GRESIT" << endl;
+		return "-1";
+	}
 }
 
 //METODA PENTRU CREATE TABLE -> NUMAR COLOANE CREATE
@@ -212,6 +264,78 @@ vector <coloana> coloane_tabela(string comanda, int nr, vector <string> data)
 	else
 		throw exception("coloane_tabela -> comanda este scrisa gresit sau prea putine coloane adaugate in tabela");
 }
+
+//functie ce scoate valori din comanda pentru INSERT INTO
+string* valori(string comanda, int nr_coloane)
+{
+	string cord = "VALUES "; string* nume = NULL;
+	int i = 0; string delimitator = ",";
+	string str;
+	int position = comanda.find(cord);
+	if (position != string::npos)
+	{
+		nume = new string[nr_coloane];
+		comanda = comanda.substr(comanda.find("(") + 1, comanda.find(")") - comanda.find("(") - 1);
+		comanda = comanda + delimitator;
+		for (int i = 0; i < nr_coloane; i++)
+		{
+			str = comanda.substr(0, comanda.find(","));
+			nume[i] = str;
+			comanda = comanda.substr(comanda.find(",") + 1, comanda.length() - comanda.find(",") + 1);
+		}
+
+	}
+	return nume;
+
+}
+
+void delete_spaces(string& comanda)
+{
+	comanda.erase(remove(comanda.begin(), comanda.end(), ' '), comanda.end());
+
+}
+
+//metoda pentru delete_from care verifica corectitudineaa comenzii + numele coloanei
+string nume_coloana(string comanda)
+{
+	string cord = "WHERE "; string nume_coloana = "";
+	if (comanda.find(cord) != string::npos)
+	{
+		comanda = comanda.substr(comanda.find(cord) + cord.length(), comanda.length() - comanda.find(cord));
+		delete_spaces(comanda);
+		nume_coloana = comanda.substr(0, comanda.find("="));
+	}
+	if (nume_coloana.length() != comanda.length())
+	{
+		return nume_coloana;
+	}
+
+	else
+	{
+		cout << "nume_coloana -> comanda nu este formatata bine si nu a putut fi extras numele" << endl;
+		return "-1";
+	}
+}
+
+
+//return value for delete pe coloana
+string value(string comanda)
+{
+	string nume = nume_coloana(comanda);
+	if (nume != "-1")
+	{
+		comanda = comanda.substr(comanda.find("=") + 1, comanda.length() - comanda.find("="));
+		delete_spaces(comanda);
+		return comanda;
+	}
+
+	else
+		cout << "value -> valorea nu a putut fi extrasa" << endl;
+	return "-1";
+
+}
+
+
 
 
 

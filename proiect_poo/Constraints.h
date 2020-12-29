@@ -40,6 +40,29 @@ public:
 		return *this;
 	}
 
+	//metoda type_data pentru insert into
+	int type_data(constraints r)
+	{
+		int ok = 1;
+		if (r.type == "INTEGER" || r.type == "INT" || r.type == "INT2")
+		{
+			return 0;
+		}
+
+		if (r.type == "FLOAT" || r.type == "REAL")
+		{
+			return 1;
+		}
+		if (r.type == "VARCHAR" || r.type == "TEXT" || r.type == "CHARACTER")
+		{
+			return 2;
+		}
+
+		else
+			return -1;
+
+	}
+
 	~constraints()
 	{
 
@@ -51,13 +74,15 @@ public:
 //supraincarcare <<
 ostream& operator<<(ostream& out, constraints r)
 {
-	cout << "RESTRICTII COLOANA= " << endl;
+	cout << endl;
+	cout << "RESTRICTII COLOANA " << endl;
+
 	cout << "Tipul de data acceptat-> ";
-	out << r.type << "| ";
-	cout << "Size-> ";
-	out << r.size << "| ";
-	cout << "Valoare default-> ";
-	out << r.val_predefinita << " | " << endl;
+	out << r.type << " ";
+	cout << endl << "Size-> ";
+	out << r.size << " ";
+	cout << endl << "Valoare default-> ";
+	out << r.val_predefinita << " " << endl;
 
 	return out;
 }

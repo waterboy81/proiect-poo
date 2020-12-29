@@ -12,9 +12,6 @@ public:
 
 	string nume_tabela = "";
 	int nr_coloane = 0;
-	//coloana* coloane_tabela = NULL; //->fiecare tabela are un numar de coloane
-									//->a carei initializare esta responsabil. clasei coloane
-
 	vector <coloana> coloane_tabela;
 
 	Table() {}
@@ -104,13 +101,15 @@ public:
 };
 ostream& operator<<(ostream& out, Table t)
 {
-
+	cout << endl << "___________________________________" << endl;
 	cout << "Nume tabel=";
 	out << t.nume_tabela << endl;
 	cout << "Numarul de coloane=";
 	out << t.nr_coloane << endl;
 	for (int i = 0; i < t.nr_coloane; i++)
 	{
+		cout << endl;
+		cout << i + 1 << ". ";
 		out << t.coloane_tabela[i];
 	}
 

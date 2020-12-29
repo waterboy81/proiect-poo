@@ -1,0 +1,223 @@
+#pragma once
+#include <iostream>
+#include <string>
+#include <vector>
+#include "Table.h"
+#include "Functii.h"
+
+using namespace std;
+
+vector <Table> lista_tabele;   //->lista mea de tabele
+vector <string> data;		   //->folosit pentru trecerea de la comanda in consola -> coloana
+vector <coloana> coloane;	   //->salveaza coloanele dupa fiecare apel de getline (in prelucrari)
+
+//IMPORTANT, am implementat ca atunci cand se arunca exceptie,
+//Sa arate ce metoda a aruncat exceptia (pentru a putea fi mai usor cu debugger-ul)
+// sintaxa :: nume_metoda -> exceptie
+
+
+//LISTA TABELE
+void display_list()
+{
+	cout << "Tabele din baza de date sunt: " << endl;
+
+	for (size_t i = 0; i < lista_tabele.size(); i++)
+	{
+
+		cout << i << " ." << lista_tabele[i].nume_tabela << " " << endl;
+	}
+
+	cout << endl;
+}
+
+//DROP TABLE
+void drop_table(string comanda, vector <Table>& lista_tabele) // & salveaza modificarile asupra listei
+{
+	int ok = 0;
+	string nume_tabela = table_name(comanda);
+	for (size_t i = 0; i < lista_tabele.size(); i++)
+	{
+		if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
+		{
+			lista_tabele.erase(lista_tabele.begin() + i);
+			ok = 1;
+		}
+	}
+	if (ok == 1)
+	{
+		cout << endl << "Table " << nume_tabela << " has been dropped ." << endl << endl;
+	}
+	else
+	{
+		cout << "ERROR from drop_table -> tabela " << nume_tabela << " nu se afla in baza de date" << endl << endl;
+	}
+}
+
+
+//CREATE TABLE
+void create_table(string comanda, vector <Table>& lista_tabele)
+{
+	string name = table_name(comanda);
+	string s = info_coloane(comanda);
+	int nr = nr_coloane(comanda);
+
+	vector <string> data = data_coloane(s, nr);
+	vector <coloana> coloane = coloane_tabela(comanda, nr, data);
+
+	if (coloane.begin() != coloane.end()) {
+		Table Instance(name, nr, lista_tabele, coloane);
+		cout << "Tabela " << name << " has been created " << endl;
+	}
+	else
+		cout << endl << "ERROR from create table -> Comanda nu a fost introdusa corect (verificati ca aveti mai mult de o coloana)" << endl;
+}
+
+//DISPLAY TABLE -> afiseaza structura tabelei prin supraincarea lui <<
+void display_table(string comanda, vector <Table> lista_tabele)
+{
+	int ok = 0;
+	string nume_tabela = table_name(comanda);
+	for (size_t i = 0; i < lista_tabele.size(); i++)
+	{
+		if (lista_tabele[i].nume_tabela.compare(nume_tabela) == 0)
+		{
+			cout << lista_tabele[i];
+			cout << "___________________________________" << endl;
+			cout << "Table " << nume_tabela << " has been displayed " << endl << endl;
+			ok = 1;
+		}
+	}
+	if (ok == 0)
+	{
+		cout << endl << "ERROR from display_table -> comanda introdusa gresit sau tabela nu exista in baza de date" << endl;
+		cout << "comanda display_table este formatata sa primeasca numele tabelei fara space dupa aceasta" << endl;
+		cout << "tabela specificata in comanda a fost " << nume_tabela << endl << endl;
+	}
+
+}
+
+//INSERT INTO 
+
+void insert_into(string comanda)
+{
+	if (identificare_comanda(comanda) == 5) {
+		string nume = table_name(comanda);
+
+		for (unsigned int i = 0; i < lista_tabele.size(); i++)
+		{
+			if (lista_tabele[i].nume_tabela == nume)
+			{
+				string* s = valori(comanda, lista_tabele[i].nr_coloane);
+				for (int j = 0; j < lista_tabele[i].nr_coloane; j++)
+				{
+					lista_tabele[i].coloane_tabela[j].add_values(s[j], 1);
+				}
+
+			}
+		}
+
+		cout << "Values successfully added to database in table " << nume << endl;
+	}
+
+	else
+		cout << "ERROR from insert_table -> comanda formatata gresit" << endl;
+
+}
+
+
+//DELETE FROM
+
+void delete_from(string comanda)
+{
+	string n_tabela = table_name(comanda);
+	string n_coloana = nume_coloana(comanda);
+	string to_delete = value(comanda);
+	int ok = 0;
+	for (unsigned int i = 0; i < lista_tabele.size(); i++)
+	{
+		if (lista_tabele[i].nume_tabela == n_tabela)
+		{
+			for (unsigned int j = 0; j < lista_tabele[i].nr_coloane; j++)
+			{
+				if (lista_tabele[i].coloane_tabela[j].nume == n_coloana)
+				{
+					for (int k = 0; k < 40 && lista_tabele[i].coloane_tabela[j].values[k] != ""; k++)
+					{
+						if (lista_tabele[i].coloane_tabela[j].values[k] == to_delete)
+						{
+							lista_tabele[i].coloane_tabela[j].values[k] = lista_tabele[i].coloane_tabela[j].restrictii.val_predefinita;
+							ok = 1;
+						}
+					}
+				}
+
+			}
+		}
+
+	}
+
+	if (ok == 1)
+	{
+		cout << "Changes have been applied to table " << n_tabela << endl;
+		cout << "Valoarea " << to_delete << " a fost inlocuita cu valorea default in coloana " << n_coloana << endl;
+	}
+
+	else {
+		cout << "ERROR from delete_from -> comanda formatata gresit sau in tabela nu exista inregistrari " << endl;
+		cout << "Detalii comanda introdusa -> nume_tabel= " << n_tabela << " nume_coloana= " << n_coloana << " valoare= " << to_delete << endl;
+	}
+}
+
+
+
+
+//SELECT
+
+void select(string comanda) {}
+
+
+//SELECT ALL FROM
+
+void select_all(string comanda)
+{
+	string n_tabela = table_name(comanda);
+	int ok = 0;
+	for (unsigned int i = 0; i < lista_tabele.size(); i++)
+	{
+		if (lista_tabele[i].nume_tabela == n_tabela)
+		{
+			ok = 1;
+			for (unsigned int j = 0; j < lista_tabele[i].nr_coloane; j++)
+			{
+				cout << "NUME COLOANA: " << lista_tabele[i].coloane_tabela[j].nume << endl;
+				for (int k = 0; k < 40 && lista_tabele[i].coloane_tabela[j].values[k] != ""; k++)
+				{
+					cout << lista_tabele[i].coloane_tabela[j].values[k] << endl;
+				}
+
+				cout << endl;
+			}
+
+		}
+	}
+
+	if (ok == 1)
+	{
+		cout << "Values from table " << n_tabela << " have been displayed" << endl;
+		cout << endl;
+	}
+
+	else
+	{
+		cout << "ERROR from select_all -> tabela nu exista in baza de date sau nu exista inregistrari" << endl;
+		cout << "Detalii comanda introdusa: table_name= " << n_tabela << endl;
+	}
+}
+
+
+//UPDATE
+void update(string comanda)
+{
+
+}
+#pragma once

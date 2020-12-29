@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coloana.h" />
+    <ClInclude Include="Comenzi_SGBD.h" />
     <ClInclude Include="Constraints.h" />
     <ClInclude Include="Functii.h" />
     <ClInclude Include="Table.h" />
