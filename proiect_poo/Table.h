@@ -11,7 +11,9 @@ class Table
 private:
 	string nume_tabela = "";
 	int nr_coloane = 0;
+	coloana* coloane = NULL;
 	vector <coloana> coloane_tabela;
+	
 	friend ostream& operator<<(ostream&, Table);
 	friend istream& operator>>(istream&, Table t);
 
@@ -49,6 +51,55 @@ public:
 		}
 
 		lista_tabele.push_back(*this);
+
+	}
+
+	Table(string nume_tabela, int nr_coloane, vector<Table>& lista_tabele, coloana* c_tabela)
+	{
+
+		int ok = 1;
+
+		if (lista_tabele.size() > 0)
+		{
+			for (size_t i = 0; i < lista_tabele.size(); i++) {
+				if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
+				{
+					ok = 0;
+				}
+			}
+		}
+
+
+		if (ok == 1)
+		{
+			this->nume_tabela = nume_tabela;
+			this->nr_coloane = nr_coloane;
+		}
+
+		else
+		{
+			cout << "constructor Table -> Numele introdus este folosit deja" << endl;
+		}
+
+		if (c_tabela != NULL && nr_coloane != 0)
+		{
+			if (coloane != NULL)
+			{
+				delete[] coloane;
+				this->nr_coloane = nr_coloane;
+				this->coloane = new coloana[nr_coloane];
+				for (int i = 0; i < nr_coloane; i++)
+				{
+					this->coloane[i] = c_tabela[i];
+				}
+			}
+		}
+
+		if (ok == 1)
+		{
+			lista_tabele.push_back(*this);
+			cout << "Table " << nume_tabela << " created ." << endl;
+		}
 
 	}
 

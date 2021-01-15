@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Create.h"
 #include "Table.h"
 #include "Functii.h"
 
@@ -21,10 +22,10 @@ void display_list()
 {
 	cout << "Tabele din baza de date sunt: " << endl;
 
-	for (size_t i = 0; i < lista_tabele.size(); i++)
+	for (size_t i = 0; i < list_tabele.size(); i++)
 	{
 
-		cout << i << " ." << lista_tabele[i].getNume_tabela() << " " << endl;
+		cout << i << " ." << list_tabele[i].getNume_tabela() << " " << endl;
 	}
 
 	cout << endl;
