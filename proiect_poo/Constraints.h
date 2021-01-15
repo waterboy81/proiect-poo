@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Coloana.h"
+//#include "Coloana.h"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ private:
 	friend istream& operator>>(istream& i, constraints c);
 
 public:
-	
+
 	constraints() {}
 
 	constraints(string type, string size, string val_predefinita)
@@ -30,6 +30,7 @@ public:
 
 	constraints(const constraints& r)
 	{
+
 		this->type = r.type;
 		this->size = r.size;
 		this->val_predefinita = r.val_predefinita;
@@ -65,7 +66,7 @@ public:
 		else
 			return -1;
 	}
-	
+
 
 	//functii acces
 
@@ -99,7 +100,7 @@ public:
 		this->size = size;
 	}
 
-	
+
 	//supraincarcari operatori
 
 	bool operator!()

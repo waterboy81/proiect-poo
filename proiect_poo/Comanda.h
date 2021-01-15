@@ -1,43 +1,44 @@
 #pragma once
 #include <iostream>
-#include<string>
+#include <string>
 #include "Table.h"
-//#include "Create.h"
+
 
 using namespace std;
+
+// cine nu are destule probleme,
+//                               isi face.
+
+//class Executabil
+//{
+//public:
+//	virtual void identificare_comanda() = 0;
+//	virtual void table_name() = 0;
+//};
 
 class comanda
 {
 private:
-	int nr;
+	int nr = -1;
 	string comanda_introdusa;
 	string nume_tabela;
 
 public:
-
-	comanda() : nr(-1), comanda_introdusa(""), nume_tabela("") {}
-
-	comanda(string cmd) : comanda()
+	comanda()
 	{
-		this->comanda_introdusa = cmd;
-		this->identificare_comanda();
-		this->table_name();
+		nr = -1;
+		comanda_introdusa = "";
+		nume_tabela = "";
 	}
 
-	comanda(const comanda& c)
+	comanda(string cmd)
 	{
-		this->comanda_introdusa = c.comanda_introdusa;
-		this->nr = c.nr;
-		this->nume_tabela = c.nume_tabela;
+		comanda_introdusa = cmd;
+		identificare_comanda();
+		table_name();
 	}
 
-	comanda& operator=(const comanda& c)
-	{
-		this->comanda_introdusa = c.comanda_introdusa;
-		this->nr = c.nr;
-		this->nume_tabela = c.nume_tabela;
-		return *this;
-	}
+	virtual void drop(vector <Table>& list_tabele) {}
 
 	string getname()
 	{
@@ -51,10 +52,23 @@ public:
 
 	string getcmd()
 	{
-		return this->comanda_introdusa;
+		return comanda_introdusa;
 	}
 
+	void setcdm(string s)
+	{
+		this->comanda_introdusa = s;
+	}
 
+	void setnb(int nr)
+	{
+		this->nr = nr;
+	}
+
+	void setname(string name)
+	{
+		this->nume_tabela = name;
+	}
 
 	void identificare_comanda()
 	{
@@ -64,7 +78,7 @@ public:
 		for (int i = 0; i < 10 && ok == 0; i++)
 		{
 			string define = (char*)commands[i];
-			position = this->comanda_introdusa.find(define);
+			position = getcmd().find(define);
 			if (position != 0 && ok == 0)
 			{
 				ok = 0;
@@ -74,32 +88,31 @@ public:
 				ok = 1;
 				val = i;
 			}
-
 		}
 
 
 		if (val == -1)
 		{
-			cout << "identificare_comanda -> Comanda introdusa gresit SAU posibilitatea ca in .txt sa fie randuri goale" << endl;
+			cout << "Identificare_comanda -> Comanda introdusa gresit SAU posibilitatea ca in .txt sa fie randuri goale" << endl;
 		}
 
 		else
 		{
-			this->nr = val;
+			setnb(val);
 		}
 	}
 
 	void table_name()
 	{
-		if (nr != -1 && comanda_introdusa != "")
+		if (getnb() != -1 && getcmd() != "")
 		{
 			string str2, str3;
-			if (nr == 1)
+			if (getnb() == 1)
 			{
 				string cmd = "DROP TABLE ";
-				size_t position = comanda_introdusa.find(cmd);
-				str2 = comanda_introdusa.substr(position + cmd.length());
-				this->nume_tabela = str2;
+				size_t position = getcmd().find(cmd);
+				str2 = getcmd().substr(position + cmd.length());
+				setname(str2);
 			}
 
 			if (nr == 0)
@@ -116,6 +129,7 @@ public:
 				string cmd = "DISPLAY TABLE ";
 				size_t position = comanda_introdusa.find(cmd);
 				str2 = comanda_introdusa.substr(position + cmd.length());
+				str2.erase(remove(str2.begin(), str2.end(), ' '), str2.end());
 				this->nume_tabela = str2;
 			}
 
@@ -150,7 +164,7 @@ public:
 			}
 
 			if (nr == 8)
-			{	//caz SELECT c1, c2 ...
+			{
 				string cmd = "FROM ";
 				size_t position = comanda_introdusa.find(cmd);
 				str2 = comanda_introdusa.substr(position + cmd.length());
@@ -165,11 +179,8 @@ public:
 				str2 = comanda_introdusa.substr(position + cmd.length());
 				str3 = str2.substr(0, str2.find(' '));
 				this->nume_tabela = str3;
-
 			}
-
 		}
-
 
 		else
 		{
@@ -177,4 +188,5 @@ public:
 		}
 
 	}
-}; 
+
+};

@@ -11,9 +11,9 @@ class Table
 private:
 	string nume_tabela = "";
 	int nr_coloane = 0;
-	coloana* coloane = NULL;
 	vector <coloana> coloane_tabela;
-	
+	coloana* coloane = NULL;
+
 	friend ostream& operator<<(ostream&, Table);
 	friend istream& operator>>(istream&, Table t);
 
@@ -21,39 +21,7 @@ public:
 
 	Table() {}
 
-	Table(string nume_tabela, int nr_coloane, vector<Table>& lista_tabele)
-	{
-
-		int ok = 1;          //verificare cu tabele deja existente / conditia {if not exist}
-
-		if (lista_tabele.size() > 0)
-		{
-			//size_t pentru warning de signed/unsigned (iterators)
-			for (size_t i = 0; i < lista_tabele.size(); i++) {
-				if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
-				{
-					ok = 0;
-				}
-			}
-		}
-
-		if (ok == 1)
-		{
-			this->nume_tabela = nume_tabela;
-			this->nr_coloane = nr_coloane;
-
-		}
-
-		else //cazul cand numele tabelei nu corespunde bazei de date
-		{
-			this->nr_coloane = nr_coloane;
-			throw exception("constructor Table -> Numele introdus este folosit deja");
-		}
-
-		lista_tabele.push_back(*this);
-
-	}
-
+	//CONSTRUCTOR NOU si bun
 	Table(string nume_tabela, int nr_coloane, vector<Table>& lista_tabele, coloana* c_tabela)
 	{
 
@@ -78,12 +46,12 @@ public:
 
 		else
 		{
-			cout << "constructor Table -> Numele introdus este folosit deja" << endl;
+			cout << "Error Table -> Numele introdus este folosit deja" << endl;
 		}
 
 		if (c_tabela != NULL && nr_coloane != 0)
 		{
-			if (coloane != NULL)
+			if (coloane == NULL)
 			{
 				delete[] coloane;
 				this->nr_coloane = nr_coloane;
@@ -100,49 +68,6 @@ public:
 			lista_tabele.push_back(*this);
 			cout << "Table " << nume_tabela << " created ." << endl;
 		}
-
-	}
-
-
-	Table(string nume_tabela, int nr_coloane, vector<Table>& lista_tabele, vector<coloana>& c_tabela)
-	{
-
-		int ok = 1;
-
-		if (lista_tabele.size() > 0)
-		{
-			for (size_t i = 0; i < lista_tabele.size(); i++) {
-				if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
-				{
-					ok = 0;
-				}
-			}
-		}
-
-
-		if (ok == 1)
-		{
-			this->nume_tabela = nume_tabela;
-			this->nr_coloane = nr_coloane;
-		}
-
-		else
-		{
-			this->nr_coloane = nr_coloane;
-
-			throw exception("constructor Table -> Numele introdus este folosit deja");
-		}
-
-		//inventie Iulia
-
-		vector<coloana>::iterator it; //daca nici nu iterator nu merge, ma las de facultate
-		for (it = c_tabela.begin(); it < c_tabela.end(); it++)
-		{
-			this->coloane_tabela.push_back(*it);    //.at() face o verificare de out-of-range 
-													//in plus fata de [] ->nu ti crapa memory macar
-		}
-
-		lista_tabele.push_back(*this);
 
 	}
 
@@ -165,12 +90,64 @@ public:
 			coloane_tabela[i].setNb_values(coloane_tabela[i].getNb_values() - 1);
 		}
 	}
+	Table& operator=(const Table& t)
+	{
+		nume_tabela = t.nume_tabela;
+		if (this->coloane != NULL)
+		{
+			delete[] coloane;
+		}
+		if (t.coloane != NULL)
+		{
+			nr_coloane = t.nr_coloane;
+			coloane = new coloana[nr_coloane];
+			for (int i = 0; i < nr_coloane; i++)
+			{
+				coloane[i] = t.coloane[i];
+			}
+		}
+		else
+		{
+			nr_coloane = 0;
+			coloane = NULL;
+		}
+
+		return *this;
+	}
+
+	Table(const Table& t)
+	{
+		nume_tabela = t.nume_tabela;
+		if (t.coloane != nullptr && t.nr_coloane != 0)
+		{
+			this->nr_coloane = t.nr_coloane;
+			this->coloane = new coloana[nr_coloane];
+			for (int i = 0; i < nr_coloane; i++)
+			{
+				this->coloane[i] = t.coloane[i];
+			}
+		}
+		else
+		{
+			this->coloane = nullptr;
+			this->nr_coloane = 0;
+		}
+	}
+
 
 	//functii acces 
 
 	string getNume_tabela()
 	{
 		return nume_tabela;
+	}
+
+	coloana* getcol()
+	{
+		if (coloane != NULL)
+		{
+			return coloane;
+		}
 	}
 
 	void setNume_tabela(string nume_tabela)
@@ -193,14 +170,14 @@ public:
 		return coloane_tabela;
 	}
 
-	void setColoane_tabela(vector<coloana> &coloane_tabela)
+	void setColoane_tabela(vector<coloana>& coloane_tabela)
 	{
 		this->coloane_tabela = coloane_tabela;
 	}
 
-	
+
 	//supraincarcari operatori pt1
-	
+
 	bool operator!()
 	{
 		return nr_coloane > 0;
@@ -255,7 +232,10 @@ public:
 
 	~Table()
 	{
-
+		if (coloane != NULL)
+		{
+			delete[] coloane;
+		}
 	}
 
 };
@@ -272,7 +252,7 @@ ostream& operator<<(ostream& out, Table t)
 	{
 		cout << endl;
 		cout << i + 1 << ". ";
-		out << t.coloane_tabela[i];
+		out << t.coloane[i];
 	}
 
 	return out;
@@ -284,7 +264,7 @@ istream& operator>>(istream& in, Table t)
 	in >> t.nr_coloane;
 	for (int i = 0; i < t.nr_coloane; i++)
 	{
-		in >> t.coloane_tabela[i];
+		in >> t.coloane[i];
 	}
 	return in;
 }

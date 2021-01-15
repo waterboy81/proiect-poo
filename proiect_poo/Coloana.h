@@ -110,7 +110,7 @@ public:
 			this->values[i] = values[i];
 	}
 
-	void setValue(string value, int i) 
+	void setValue(string value, int i)
 	{
 		this->values[i] = value;
 	}
@@ -132,7 +132,7 @@ public:
 		return nb_values > 0;
 	}
 
-	coloana operator++() 
+	coloana operator++()
 	{
 		this->nb_values++;
 		return *this;
@@ -161,7 +161,7 @@ public:
 	{
 		if (nume != "")
 			return nume.size();
-		else 
+		else
 			return 0;
 	}
 

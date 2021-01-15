@@ -147,6 +147,8 @@
     <ClInclude Include="Comenzi_SGBD.h" />
     <ClInclude Include="Constraints.h" />
     <ClInclude Include="Create.h" />
+    <ClInclude Include="CRUD.h" />
+    <ClInclude Include="Drop.h" />
     <ClInclude Include="Functii.h" />
     <ClInclude Include="Table.h" />
     <ClInclude Include="menu.h" />

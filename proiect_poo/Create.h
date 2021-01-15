@@ -4,9 +4,9 @@
 #include "Table.h"
 #include "Comanda.h"
 
+
 using namespace std;
 
-vector <Table> list_tabele;
 
 class comanda_create : public comanda
 {
@@ -24,6 +24,8 @@ public:
 
 	comanda_create(string cmd) : comanda(cmd)
 	{
+		this->identificare_comanda();
+		this->table_name();
 		this->define_coloane();
 	}
 
@@ -71,7 +73,96 @@ public:
 	}
 
 
-	/*void identificare_comanda()
+	//am ajuns sa scriu singura operatorii, wtf 
+	bool operator!()
+	{
+		if (this->getnb() == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+
+	void define_coloane()
+	{
+		int ok = 0; unsigned int sum = 0;
+		string c = getcmd();
+		c = c.substr(c.find(this->getname()) + this->getname().size());
+		c.erase(remove(c.begin(), c.end(), ' '), c.end());
+		bool corect = !*this;
+		if (this->getnb() == 0 && corect == 1)
+		{
+			if (this->datas != NULL)
+			{
+				delete[] datas;
+			}
+			sum += count(c.begin(), c.end(), '(');
+			sum += count(c.begin(), c.end(), ')');
+
+			if (sum % 2 == 0 && sum / 2 > 1 && sum != 0)
+			{
+				ok = 1;
+			}
+
+			//EXTRAG PARTEA DE COMENZI
+
+			if (ok == 1)
+			{
+				c = c.substr(c.find("(") + 1, c.find_last_of(")"));
+				this->size = (sum - 2) / 2;
+				this->datas = new coloana[size];
+
+				for (int i = 0; i < size; i++)
+				{
+					string* coloane_info = new string[4];
+					string x = c.substr(c.find("(") + 1, c.find(")"));
+					int dimensiune = x.length();
+
+					string s = x.substr(0, x.find(","));
+					coloane_info[0] = s;
+
+					x = x.substr(x.find(",") + 1, x.find(")"));
+					s = x.substr(0, x.find(","));
+					coloane_info[1] = s;
+
+					x = x.substr(x.find(",") + 1, x.find(")"));
+					s = x.substr(0, x.find(","));
+					coloane_info[2] = s;
+
+					x = x.substr(x.find(","), x.find(")"));
+					s = x.substr(x.find(",") + 1, x.find(")") - 1);
+					coloane_info[3] = s;
+
+					c.erase(0, dimensiune + 1);
+
+					//create coloane
+					constraints restrictii(coloane_info[1], coloane_info[2], coloane_info[3]);
+					coloana col(coloane_info[0], restrictii);
+
+					datas[i] = col;
+					delete[] coloane_info;
+				}
+			}
+		}
+	}
+
+	void create(vector <Table>& list_tabele)
+	{
+		if (datas != NULL && getnb() != -1 && getname() != "")
+		{
+			Table Intance(getname(), size, list_tabele, datas);
+
+		}
+
+		else
+			cout << "Comada CREATE TABLE formatata gresit" << endl;
+	}
+
+	void identificare_comanda()
 	{
 		const char* commands[10] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "CREATE INDEX ", "DROP INDEX ", "INSERT INTO ", "DELETE FROM ","SELECT ALL FROM ", "SELECT ", "UPDATE " };
 		size_t position = -1;  int ok = 0; int val = -1;
@@ -100,151 +191,26 @@ public:
 
 		else
 		{
-			this->nr = val;
+			this->setnb(val);
 		}
 	}
 
-	void name()
+	void table_name()
 	{
-		if (nr == 0)
+		if (this->getnb() != -1 && this->getcmd() != "")
 		{
-			string str2;
-			string c = "CREATE TABLE ";
-			size_t position = this->comanda_introdusa.find(c);
-			str2 = comanda_introdusa.substr(position + c.length());
-			string str3 = str2.substr(0, str2.find(' '));
-			this->table_name = str3;
-		}
-	}*/
-
-	//am ajuns sa scriu singura operatorii, wtf 
-	bool operator!()
-	{
-		if (this->getnb() > -1 && this->getnb() < 10)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	void info_coloane()
-	{
-		bool corect = !*this;
-		if (this->getnb() == 0 && corect == 1)
-		{
-			int ok = 0;
-			string str2;
-			string define = "CREATE TABLE ";
-			size_t position = this->getcmd().find(define);
-			str2 = this->getcmd().substr(position + define.length());
-
-			//substrag doar partea de comenzi
-
-			string str3 = str2.substr(str2.find("("), str2.rfind(")"));  //-> rfind e ultima aparitie
-
-			//validare pentru corectitudinea comenzii - partiala
-			int nr_coloane = count(str3.begin(), str3.end(), '(');
-			int nr_coloane1 = count(str3.begin(), str3.end(), ')');
-			if ((nr_coloane + nr_coloane1) % 2 == 0)
+			string str2, str3;
+			if (this->getnb() == 0)
 			{
-				ok = 1;
-			}
-
-			if (ok == 0)
-			{
-				cout << "info_coloane -> Comanda introdusa gresit | greseala formatare ( ) " << endl;
-			}
-
-			//mare intrebare
-			this->getcmd() = str3;
-		}
-
-		else
-		{
-			cout << "Comanda introdusa gresit | CREATE TABLE SCRIS GRESIT" << endl;
-		}
-	}
-
-
-	void define_coloane()
-	{
-		int ok = 0;
-		string c = getcmd();
-		c.erase(remove(c.begin(), c.end(), ' '), c.end());
-		bool corect = !*this;
-		if (this->getnb() == 0 && corect == 1)
-		{
-			if (this->datas != NULL)
-			{
-				delete[] datas;
-			}
-			int nr_coloane = count(c.begin(), c.end(), '(');
-			int nr_coloane1 = count(c.begin(), c.end(), ')');
-			if ((nr_coloane + nr_coloane1) % 2 == 0)
-			{
-				ok = 1;
-			}
-
-			if (ok == 0)
-			{
-				cout << endl << "nr_coloane -> Comanda introdusa gresit | vezi restr. coloane" << endl;
-			}
-
-			//EXTRAG PARTEA DE COMENZI
-			c = c.substr(c.find("(") + 1, c.find_last_of(")"));
-
-			this->size = (nr_coloane + nr_coloane1 - 2) / 2;
-			this->datas = new coloana[size];
-			for (int i = 0; i < size; i++)
-			{
-				string* coloane_info = new string[4];
-				string x = c.substr(c.find("(") + 1, c.find(")"));
-				int dimensiune = x.length();
-
-				string s = x.substr(0, x.find(","));
-				coloane_info[0] = s;
-
-				x = x.substr(x.find(",") + 1, x.find(")"));
-				s = x.substr(0, x.find(","));
-				coloane_info[1] = s;
-
-				x = x.substr(x.find(",") + 1, x.find(")"));
-				s = x.substr(0, x.find(","));
-				coloane_info[2] = s;
-
-				x = x.substr(x.find(","), x.find(")"));
-				s = x.substr(x.find(",") + 1, x.find(")") - 1);
-				coloane_info[3] = s;
-
-				c.erase(0, dimensiune + 1);
-
-				//create coloane
-				constraints restrictii(coloane_info[1], coloane_info[2], coloane_info[3]);
-				coloana col(coloane_info[0], restrictii);
-
-				datas[i] = col;
-				delete[] coloane_info;
+				string cmd = "CREATE TABLE ";
+				size_t position = this->getcmd().find(cmd);
+				str2 = this->getcmd().substr(position + cmd.length());
+				str3 = str2.substr(0, str2.find(' '));
+				this->setname(str3);
 			}
 		}
 	}
 
-	void create()
-	{
-		//this->identificare_comanda();
-		//this->info_coloane();
-		this->define_coloane();
-		if (datas != NULL && getnb() != -1 && getname() != "")
-		{
-			Table Intance(getname(), size, list_tabele, datas);
-
-		}
-
-		else
-			cout << "Comada CREATE TABLE formatata gresit" << endl;
-	}
 
 	~comanda_create()
 	{

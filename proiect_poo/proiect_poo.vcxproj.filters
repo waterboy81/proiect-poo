@@ -39,6 +39,12 @@
     <ClInclude Include="Create.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CRUD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Drop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
