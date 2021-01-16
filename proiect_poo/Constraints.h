@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-//#include "Coloana.h"
+#include "Coloana.h"
 
 using namespace std;
 
@@ -173,7 +173,6 @@ ostream& operator<<(ostream& out, constraints r)
 
 	return out;
 }
-
 
 istream& operator>>(istream& i, constraints c)
 {

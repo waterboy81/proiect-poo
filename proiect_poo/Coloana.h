@@ -198,5 +198,3 @@ istream& operator>>(istream& in, coloana& c)
 	in >> c.restrictii;
 	return in;
 }
-
-

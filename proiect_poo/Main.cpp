@@ -6,10 +6,9 @@
 #include "Create.h"
 #include "Drop.h"
 #include "CRUD.h"
-//#include "Comenzi_SGBD.h"
-
 
 using namespace std;
+
 
 vector <Table> list_tabele;
 void display_list(vector <Table> list_tabele)
@@ -28,8 +27,10 @@ void display_list(vector <Table> list_tabele)
 
 int main(int argc, char* argv[])
 {
+	ifstream ff;
+	ff.open("Comenzi_consola.txt");
 	string c;
-	while (getline(cin, c) && c != "EXIT")
+	while (getline(ff, c))
 	{
 		comanda cmd(c);
 
@@ -43,59 +44,47 @@ int main(int argc, char* argv[])
 			drop_table e(c);
 			e.drop(list_tabele);
 		}
-
 		if (cmd.getnb() == 2)
 		{
 			drop_table e(c);
 			e.display_table(list_tabele);
 		}
-
 		if (cmd.getnb() == 5)
 		{
 			comanda_insert e(c);
 			e.insert(list_tabele);
 		}
-
+		if (cmd.getnb() == 6)
+		{
+			comanda_delete e(c);
+			e.delete_from(list_tabele);
+		}
+		if (cmd.getnb() == 7)
+		{
+			comanda_select e(c);
+			e.select_all(list_tabele);
+		}
+		if (cmd.getnb() == 8)
+		{
+			select_part e(c);
+			e.select(list_tabele);
+		}
+		if (cmd.getnb() == 9)
+		{
+			comanda_update e(c);
+			if (e.verificare() == 0)
+			{
+				cout << "Comanda formatata gresit" << endl << "=== | " << e.getcmd() << " | ===" << endl;
+			}
+			else
+			{
+				e.update(list_tabele);
+			}
+		}
 	}
-
+	ff.close();
 
 	//testatre derivare, instantiaza bine. mai trebuie impuse verificari. instantiere prin metoda din derivata
 	//comanda trebuie derivata pentru tipurile select, update, insert si delete. (4 clase noi) :D
-
-	//getline(cin, c);
-	//comanda_create b (c);
-	//b.create(list_tabele);
-	//b.drop(list_tabele);
-	//display_list(list_tabele);
-
-
-	//ifstream c;
-	//c.open("Comenzi_consola.txt");
-	//while (getline(c, comanda))
-	//{
-	//	int cod = identificare_comanda(comanda);
-	//	if (cod == 0)
-	//		create_table(comanda, lista_tabele);
-	//	if (cod == 1)
-	//		drop_table(comanda, lista_tabele);
-	//	if (cod == 2)
-	//		display_table(comanda, lista_tabele);
-	//	/*if (cod == 3)
-	//		create_index(comanda);
-	//	if (cod == 4)
-	//		drop_index(comanda);*/
-	//	if (cod == 5)
-	//		insert_into(comanda);
-	//	if (cod == 6)
-	//		delete_from(comanda);
-	//	if (cod == 7)
-	//		select_all(comanda);
-	//	if (cod == 8)
-	//		select(comanda);
-	//	if (cod == 9)
-	//		update(comanda);
-	//}
-
-	//c.close();
 
 }

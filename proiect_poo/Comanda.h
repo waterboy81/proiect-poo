@@ -6,9 +6,6 @@
 
 using namespace std;
 
-// cine nu are destule probleme,
-//                               isi face.
-
 //class Executabil
 //{
 //public:
@@ -38,7 +35,7 @@ public:
 		table_name();
 	}
 
-	virtual void drop(vector <Table>& list_tabele) {}
+	//virtual void drop(vector <Table>& list_tabele){}
 
 	string getname()
 	{

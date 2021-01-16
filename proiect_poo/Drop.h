@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include<string>
+#include <fstream>
+#include <cstdio>
 #include "Table.h"
 #include "Comanda.h"
 
@@ -26,6 +28,8 @@ public:
 				if (list_tabele[i].getNume_tabela() == s)
 				{
 					list_tabele.erase(list_tabele.begin() + i);
+					string file_name = s + ".bin";
+					remove(file_name.c_str()); //sterge fisierul asociat
 					ok = 1;
 				}
 			}
@@ -39,6 +43,7 @@ public:
 			cout << "ERROR from drop_table -> tabela " << s << " nu se afla in baza de date" << endl << endl;
 		}
 	}
+
 
 	void display_table(vector <Table> lista_tabele)
 	{

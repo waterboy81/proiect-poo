@@ -77,19 +77,21 @@ public:
 
 		for (int i = 0; i < nr_coloane; i++)
 		{
-			for (int j = 0; j < coloane_tabela[i].getNb_values(); j++)
+			for (int j = 0; j < coloane[i].getNb_values(); j++)
 			{
 				if (j == row)
 				{
-					for (int k = j; k < coloane_tabela[i].getNb_values(); k++)
+					for (int k = j; k < coloane[i].getNb_values(); k++)
 					{
-						coloane_tabela[i].getValues()[k] = coloane_tabela[i].getValues()[k + 1];
+						coloane[i].getValues()[k] = coloane[i].getValues()[k + 1];
 					}
 				}
 			}
-			coloane_tabela[i].setNb_values(coloane_tabela[i].getNb_values() - 1);
+			coloane[i].setNb_values(coloane[i].getNb_values() - 1);
 		}
 	}
+
+
 	Table& operator=(const Table& t)
 	{
 		nume_tabela = t.nume_tabela;
@@ -239,7 +241,6 @@ public:
 	}
 
 };
-
 
 ostream& operator<<(ostream& out, Table t)
 {

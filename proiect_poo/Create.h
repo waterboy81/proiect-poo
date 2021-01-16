@@ -1,12 +1,11 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "Table.h"
 #include "Comanda.h"
 
-
 using namespace std;
-
 
 class comanda_create : public comanda
 {
@@ -154,13 +153,16 @@ public:
 	{
 		if (datas != NULL && getnb() != -1 && getname() != "")
 		{
-			Table Intance(getname(), size, list_tabele, datas);
+			Table Instance(getname(), size, list_tabele, datas);
+			this->WriteBinaryFile(Instance);
 
 		}
 
 		else
 			cout << "Comada CREATE TABLE formatata gresit" << endl;
 	}
+
+
 
 	void identificare_comanda()
 	{
@@ -180,9 +182,7 @@ public:
 				ok = 1;
 				val = i;
 			}
-
 		}
-
 
 		if (val == -1)
 		{
@@ -209,6 +209,48 @@ public:
 				this->setname(str3);
 			}
 		}
+	}
+
+	void WriteBinaryFile(Table t)
+	{
+		string nume_fisier = t.getNume_tabela();
+		ofstream f(nume_fisier + ".bin", ios::out | ios::binary | ios::trunc);
+		int l;
+		if (!f.is_open())
+			cout << "Nu se poate deschide fisierul " << nume_fisier << endl;
+		else
+		{
+			l = t.getNume_tabela().length();
+			f.write((char*)&l, sizeof(l));
+			l = l + 1;
+			f.write(t.getNume_tabela().c_str(), l);  //ma rog sa nu faca figuri usigned ul din length
+
+			for (int i = 0; i < t.getNr_coloane(); i++)
+			{
+				l = t.getcol()[i].getNume().length();
+				f.write((char*)&l, sizeof(l));
+				l = l + 1;
+				f.write(t.getcol()[i].getNume().c_str(), l);
+
+				l = t.getcol()[i].getRestrictii().getType().length();
+				f.write((char*)&l, sizeof(l));
+				l = l + 1;
+				f.write(t.getcol()[i].getRestrictii().getType().c_str(), l);
+
+				l = t.getcol()[i].getRestrictii().getSize();
+				f.write((char*)&l, sizeof(l));
+
+
+				l = t.getcol()[i].getRestrictii().getVal_predefinita().length();
+				f.write((char*)&l, sizeof(l));
+				l = l + 1;
+				f.write(t.getcol()[i].getRestrictii().getVal_predefinita().c_str(), l);
+			}
+
+			//f.write((char*)&t, sizeof(Table));
+			//nu e optim la deserializare 
+		}
+		f.close();
 	}
 
 

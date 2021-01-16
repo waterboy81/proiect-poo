@@ -27,12 +27,6 @@
     <ClInclude Include="Constraints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Functii.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Comenzi_SGBD.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Comanda.h">
       <Filter>Header Files</Filter>
     </ClInclude>
