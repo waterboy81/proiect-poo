@@ -69,10 +69,10 @@ public:
 
 	void identificare_comanda()
 	{
-		const char* commands[10] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "CREATE INDEX ", "DROP INDEX ", "INSERT INTO ", "DELETE FROM ","SELECT ALL FROM ", "SELECT ", "UPDATE " };
+		const char* commands[11] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "CREATE INDEX ", "DROP INDEX ", "INSERT INTO ", "DELETE FROM ","SELECT ALL FROM ", "SELECT ", "UPDATE ", "BINARY CREATE " };
 		size_t position = -1;  int ok = 0; int val = -1;
 
-		for (int i = 0; i < 10 && ok == 0; i++)
+		for (int i = 0; i < 11 && ok == 0; i++)
 		{
 			string define = (char*)commands[i];
 			position = getcmd().find(define);
@@ -177,6 +177,15 @@ public:
 				str3 = str2.substr(0, str2.find(' '));
 				this->nume_tabela = str3;
 			}
+
+			if (nr == 10) 
+			{
+				string cmd = "BINARY CREATE ";
+				size_t position = comanda_introdusa.find(cmd);
+				str2 = comanda_introdusa.substr(position + cmd.length());
+				this->nume_tabela = str2;
+
+			}
 		}
 
 		else
@@ -186,4 +195,59 @@ public:
 
 	}
 
+};
+
+class comanda_binary : public comanda
+{
+private: 
+
+public:
+	comanda_binary(string cmd) : comanda(cmd) {}
+
+	void read(vector<Table> &list) //functioneaza, am testat
+	{
+		int l = 0; string s=getname();
+		ifstream f(s, ios::binary);
+		vector <coloana> bb;
+		f.read((char*)&l, sizeof(l));
+		char* aux = new char[l + 1];
+		f.read(aux, l + 1);
+		s = aux; //nume tabela
+		delete[] aux;
+
+		while(!f.eof()) //eof imi da fail sau e corput binarul , deci serializarea nu a generat un binar bun
+		{
+			f.read((char*)&l, sizeof(l));
+			aux = new char[l + 1];
+			f.read(aux, l + 1);
+			string nume_c= aux; //nume col
+			delete[] aux;
+
+			f.read((char*)&l, sizeof(l));
+			aux = new char[l + 1];
+			f.read(aux, l + 1);
+			string r1= aux;
+			delete[] aux; //type
+
+			int a = 0;
+			f.read((char*)&a, sizeof(a));
+			int s= a; //size
+
+
+			f.read((char*)&l, sizeof(l));
+			aux = new char[l + 1];
+			f.read(aux, l + 1);
+			string r2 = aux;
+			delete[] aux; //predef
+
+			constraints x(r1, s, r2);
+			coloana y(nume_c, x);
+			bb.push_back(y);
+		}
+
+		Table a(s, bb.size()-1, list, bb);
+
+		f.close();
+
+	}
 };

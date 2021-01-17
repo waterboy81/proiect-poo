@@ -28,6 +28,13 @@ public:
 		this->val_predefinita = val_predefinita;
 	}
 
+	constraints(string type, int size, string val_predefinita) //constructor pentru binary create
+	{
+		this->type = type;
+		this->size = size; 
+		this->val_predefinita = val_predefinita;
+	}
+
 	constraints(const constraints& r)
 	{
 

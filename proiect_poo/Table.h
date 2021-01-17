@@ -11,7 +11,7 @@ class Table
 private:
 	string nume_tabela = "";
 	int nr_coloane = 0;
-	vector <coloana> coloane_tabela;
+	//vector <coloana> coloane_tabela;
 	coloana* coloane = NULL;
 
 	friend ostream& operator<<(ostream&, Table);
@@ -70,6 +70,40 @@ public:
 		}
 
 	}
+
+	//constructor from binary
+	Table(string nume_tabela, int nr_coloane, vector<Table>& lista_tabele, vector<coloana> c_tabela)
+	{
+
+		int ok = 1;
+
+		if (lista_tabele.size() > 0)
+		{
+			for (size_t i = 0; i < lista_tabele.size(); i++) {
+				if (nume_tabela.compare(lista_tabele[i].nume_tabela) == 0)
+				{
+					ok = 0;
+				}
+			}
+		}
+
+
+		if (ok == 1)
+		{
+			this->nume_tabela = nume_tabela;
+			this->nr_coloane = nr_coloane;
+			coloane = new coloana[nr_coloane];
+			for (int i = 0; i < nr_coloane; i++)
+			{
+				coloane[i] = c_tabela[i];
+			}
+
+			lista_tabele.push_back(*this);
+
+		}
+
+	}
+
 
 	//inventie pentru delete_from metoda de decalare
 	void modificare_date(int row)				//row->row to be deleted in table
@@ -165,16 +199,6 @@ public:
 	void setNr_coloane(int nr_coloane)
 	{
 		this->nr_coloane = nr_coloane;
-	}
-
-	vector <coloana>& getColoane_tabela()
-	{
-		return coloane_tabela;
-	}
-
-	void setColoane_tabela(vector<coloana>& coloane_tabela)
-	{
-		this->coloane_tabela = coloane_tabela;
 	}
 
 

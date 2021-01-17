@@ -46,7 +46,6 @@ public:
 		return *this;
 	}
 
-	//ACCES
 	int getsize()
 	{
 		return this->size;
@@ -72,7 +71,6 @@ public:
 	}
 
 
-	//am ajuns sa scriu singura operatorii, wtf 
 	bool operator!()
 	{
 		if (this->getnb() == 0)
@@ -162,54 +160,11 @@ public:
 			cout << "Comada CREATE TABLE formatata gresit" << endl;
 	}
 
-
-
-	void identificare_comanda()
+	void create_binary()
 	{
-		const char* commands[10] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "CREATE INDEX ", "DROP INDEX ", "INSERT INTO ", "DELETE FROM ","SELECT ALL FROM ", "SELECT ", "UPDATE " };
-		size_t position = -1;  int ok = 0; int val = -1;
-
-		for (int i = 0; i < 10 && ok == 0; i++)
-		{
-			string define = (char*)commands[i];
-			position = this->getcmd().find(define);
-			if (position != 0 && ok == 0)
-			{
-				ok = 0;
-			}
-			else
-			{
-				ok = 1;
-				val = i;
-			}
-		}
-
-		if (val == -1)
-		{
-			cout << "identificare_comanda -> Comanda introdusa gresit SAU posibilitatea ca in .txt sa fie randuri goale" << endl;
-		}
-
-		else
-		{
-			this->setnb(val);
-		}
+		//
 	}
 
-	void table_name()
-	{
-		if (this->getnb() != -1 && this->getcmd() != "")
-		{
-			string str2, str3;
-			if (this->getnb() == 0)
-			{
-				string cmd = "CREATE TABLE ";
-				size_t position = this->getcmd().find(cmd);
-				str2 = this->getcmd().substr(position + cmd.length());
-				str3 = str2.substr(0, str2.find(' '));
-				this->setname(str3);
-			}
-		}
-	}
 
 	void WriteBinaryFile(Table t)
 	{
@@ -245,6 +200,7 @@ public:
 				f.write((char*)&l, sizeof(l));
 				l = l + 1;
 				f.write(t.getcol()[i].getRestrictii().getVal_predefinita().c_str(), l);
+				f.clear();
 			}
 
 			//f.write((char*)&t, sizeof(Table));

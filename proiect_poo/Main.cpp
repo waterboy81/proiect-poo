@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
 		{
 			comanda_create e(c);
 			e.create(list_tabele);
+
 		}
 		if (cmd.getnb() == 1)
 		{
@@ -81,8 +82,16 @@ int main(int argc, char* argv[])
 				e.update(list_tabele);
 			}
 		}
+
+		if (cmd.getnb() == 10) 
+		{
+			comanda_binary e(c);
+			e.read(list_tabele);
+		}
 	}
 	ff.close();
+	cout << endl << "Mom de adev" << endl;
+	display_list(list_tabele);
 
 	//testatre derivare, instantiaza bine. mai trebuie impuse verificari. instantiere prin metoda din derivata
 	//comanda trebuie derivata pentru tipurile select, update, insert si delete. (4 clase noi) :D

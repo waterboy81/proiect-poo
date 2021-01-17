@@ -127,6 +127,7 @@ public:
 			cout << "Nu se poate deschide fisierul " << nume_fisier << endl;
 		else
 		{
+			f.clear();
 			l = t.getNume_tabela().length();
 			f.write((char*)&l, sizeof(l));
 			l = l + 1;
