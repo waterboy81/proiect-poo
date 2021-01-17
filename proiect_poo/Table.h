@@ -11,7 +11,6 @@ class Table
 private:
 	string nume_tabela = "";
 	int nr_coloane = 0;
-	//vector <coloana> coloane_tabela;
 	coloana* coloane = NULL;
 
 	friend ostream& operator<<(ostream&, Table);
@@ -182,7 +181,7 @@ public:
 	{
 		if (coloane != NULL)
 		{
-			return coloane;
+			return &coloane[0];
 		}
 	}
 

@@ -208,46 +208,50 @@ public:
 	{
 		int l = 0; string s=getname();
 		ifstream f(s, ios::binary);
-		vector <coloana> bb;
-		f.read((char*)&l, sizeof(l));
-		char* aux = new char[l + 1];
-		f.read(aux, l + 1);
-		s = aux; //nume tabela
-		delete[] aux;
-
-		while(!f.eof()) //eof imi da fail sau e corput binarul , deci serializarea nu a generat un binar bun
-		{
+		if (f.is_open()) {
+			vector <coloana> bb;
 			f.read((char*)&l, sizeof(l));
-			aux = new char[l + 1];
+			char* aux = new char[l + 1];
 			f.read(aux, l + 1);
-			string nume_c= aux; //nume col
+			s = aux; //nume tabela
 			delete[] aux;
 
-			f.read((char*)&l, sizeof(l));
-			aux = new char[l + 1];
-			f.read(aux, l + 1);
-			string r1= aux;
-			delete[] aux; //type
+			while (!f.eof()) //eof imi da fail sau e corput binarul , deci serializarea nu a generat un binar bun
+			{
+				f.read((char*)&l, sizeof(l));
+				aux = new char[l + 1];
+				f.read(aux, l + 1);
+				string nume_c = aux; //nume col
+				delete[] aux;
 
-			int a = 0;
-			f.read((char*)&a, sizeof(a));
-			int s= a; //size
+				f.read((char*)&l, sizeof(l));
+				aux = new char[l + 1];
+				f.read(aux, l + 1);
+				string r1 = aux;
+				delete[] aux; //type
+
+				int a = 0;
+				f.read((char*)&a, sizeof(a));
+				int s = a; //size
 
 
-			f.read((char*)&l, sizeof(l));
-			aux = new char[l + 1];
-			f.read(aux, l + 1);
-			string r2 = aux;
-			delete[] aux; //predef
+				f.read((char*)&l, sizeof(l));
+				aux = new char[l + 1];
+				f.read(aux, l + 1);
+				string r2 = aux;
+				delete[] aux; //predef
 
-			constraints x(r1, s, r2);
-			coloana y(nume_c, x);
-			bb.push_back(y);
+				constraints x(r1, s, r2);
+				coloana y(nume_c, x);
+				bb.push_back(y);
+			}
+
+			Table a(s, bb.size() - 1, list, bb);
+
+			f.close();
 		}
-
-		Table a(s, bb.size()-1, list, bb);
-
-		f.close();
+		else
+			cout << "Fisierul nu a putut fi deschis." << endl;
 
 	}
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "Table.h"
 #include "Comanda.h"
@@ -110,6 +111,7 @@ public:
 						list[i].getcol()[j].add_values(values[j], 1);
 					}
 					cout << "Values successfully added to database in table " << getname() << endl;
+					this->WriteBinaryFile(list[i]);
 				}
 			}
 		}
@@ -126,37 +128,15 @@ public:
 		if (!f.is_open())
 			cout << "Nu se poate deschide fisierul " << nume_fisier << endl;
 		else
-		{
-			f.clear();
-			l = t.getNume_tabela().length();
-			f.write((char*)&l, sizeof(l));
-			l = l + 1;
-			f.write(t.getNume_tabela().c_str(), l);  //ma rog sa nu faca figuri usigned ul din length
-
+		{  
 			for (int i = 0; i < t.getNr_coloane(); i++)
 			{
-				l = t.getcol()[i].getNume().length();
+				l = values[i].length();
 				f.write((char*)&l, sizeof(l));
 				l = l + 1;
-				f.write(t.getcol()[i].getNume().c_str(), l);
+				f.write(values[i].c_str(), l);
 
-				l = t.getcol()[i].getRestrictii().getType().length();
-				f.write((char*)&l, sizeof(l));
-				l = l + 1;
-				f.write(t.getcol()[i].getRestrictii().getType().c_str(), l);
-
-				l = t.getcol()[i].getRestrictii().getSize();
-				f.write((char*)&l, sizeof(l));
-
-
-				l = t.getcol()[i].getRestrictii().getVal_predefinita().length();
-				f.write((char*)&l, sizeof(l));
-				l = l + 1;
-				f.write(t.getcol()[i].getRestrictii().getVal_predefinita().c_str(), l);
 			}
-
-			//f.write((char*)&t, sizeof(Table));
-			//nu e optim la deserializare 
 		}
 		f.close();
 	}
@@ -233,8 +213,8 @@ public:
 
 	void delete_from(vector<Table>& list)
 	{
-		int ok = 0; int contor = 0;
-		for (unsigned int i = 0; i < list.size(); i++)
+		int ok = 0; int contor = 0;  int t_number = 0;
+		for (int i = 0; i < list.size(); i++)
 		{
 			if (list[i].getNume_tabela() == this->getname())
 			{
@@ -252,6 +232,13 @@ public:
 								contor++;
 							}
 						}
+						t_number = i;
+						int m = list[i].getcol()[j].getNb_values(); //numarul de valori existente
+
+						if (contor != 0) 
+						{
+							this->ModifyBinaryFile(list[t_number], m);
+						}
 					}
 				}
 			}
@@ -268,6 +255,29 @@ public:
 			cout << "ERROR -> comanda formatata gresit sau in tabela nu exista inregistrari " << endl;
 			cout << "Detalii comanda introdusa -> nume_tabel= " << getname() << " nume_coloana= " << n_coloana << " valoare= " << value << endl;
 		}
+	}
+
+	void ModifyBinaryFile(Table t, int m)
+	{
+		string nume_fisier = t.getNume_tabela() + "_data.bin"; string s;
+		ofstream f(nume_fisier, ios::out | ios::binary | ios::trunc); int k = 0;
+		if (!f.is_open())
+			cout << "Nu se poate deschide fisierul " << nume_fisier << endl;
+		else
+		{
+			for (int i = 0; i < m; i++)
+			{
+				for (k = 0; k < t.getNr_coloane(); k++) 
+				{
+					s = t.getcol()[k].getValues()[i];
+					int l = s.length();
+					f.write((char*)&l, sizeof(l));
+					l = l + 1;
+					f.write(s.c_str(), l);
+				}
+			}
+		}
+		f.close();
 	}
 };
 
@@ -355,6 +365,7 @@ public:
 	void update(vector <Table>& list_tabele)
 	{
 		int ok = 0; int contor = 0; int okk = 0; int j = 0;
+		int save_point = 0;
 		if (verificare() == 1) {
 			for (unsigned int i = 0; i < list_tabele.size(); i++)
 			{
@@ -374,6 +385,7 @@ public:
 								{
 									list_tabele[i].getcol()[j].setValue(new_value, k);
 									contor++;
+									save_point = i;
 								}
 							}
 						}
@@ -386,6 +398,7 @@ public:
 		{
 			cout << endl << "Table " << getname() << " has been altered.";
 			cout << endl << contor << " row / rows have been updated. " << endl;
+			ModifyBinaryFile(list_tabele[save_point]);
 		}
 
 		else
@@ -398,6 +411,32 @@ public:
 			}
 		}
 	}
+
+	void ModifyBinaryFile(Table t)
+	{
+		string nume_fisier = t.getNume_tabela() + "_data.bin"; string s;
+		int m = t.getcol()[0].getNb_values();
+		ofstream f(nume_fisier, ios::out | ios::binary | ios::trunc); int k = 0;
+		if (!f.is_open())
+			cout << "Nu se poate deschide fisierul " << nume_fisier << endl;
+		else
+		{
+			for (int i = 0; i < m; i++)
+			{
+				for (k = 0; k < t.getNr_coloane(); k++)
+				{
+					s = t.getcol()[k].getValues()[i];
+					int l = s.length();
+					f.write((char*)&l, sizeof(l));
+					l = l + 1;
+					f.write(s.c_str(), l);
+				}
+			}
+		}
+		f.close();
+	}
+
+
 };
 
 class comanda_select : public comanda

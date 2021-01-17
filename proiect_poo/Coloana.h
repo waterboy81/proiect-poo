@@ -99,8 +99,7 @@ public:
 
 	string* getValues()
 	{
-		string* adresa = new string[nb_values];
-		adresa = &values[0];
+		string* adresa = values;
 		return adresa;
 	}
 

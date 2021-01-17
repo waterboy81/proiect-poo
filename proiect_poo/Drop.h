@@ -30,6 +30,8 @@ public:
 					list_tabele.erase(list_tabele.begin() + i);
 					string file_name = s + ".bin";
 					remove(file_name.c_str()); //sterge fisierul asociat
+					file_name = s + "_data.bin";
+					remove(file_name.c_str());  //sterge fisierul de date asociat
 					ok = 1;
 				}
 			}

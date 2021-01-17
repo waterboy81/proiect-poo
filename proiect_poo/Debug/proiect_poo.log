@@ -1,5 +1,6 @@
 ﻿  Main.cpp
 C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Drop.h(26,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Drop.h(51,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Table.h(187): warning C4715: 'Table::getcol': not all control paths return a value
+C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Drop.h(53,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\CRUD.h(217,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Table.h(186): warning C4715: 'Table::getcol': not all control paths return a value
   proiect_poo.vcxproj -> C:\Users\pc\Documents\GitHub\proiect-poo\Debug\proiect_poo.exe
