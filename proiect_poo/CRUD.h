@@ -442,27 +442,50 @@ public:
 class comanda_select : public comanda
 {
 private:
+	 int select_number=1;
 public:
 	comanda_select(string cmd) : comanda(cmd) {}
+
+	int gets_number() 
+	{
+		return select_number;
+	}
+
+
 	void select_all(vector<Table>& list_tabele)
 	{
-		int ok = 0;
+		int ok = 0; 
 		for (unsigned int i = 0; i < list_tabele.size(); i++)
 		{
 			if (list_tabele[i].getNume_tabela() == getname())
 			{
-				ok = 1;
+				ofstream g;
+				ok = 1; string s = "SELECT ALL_" + to_string(select_number)+".txt";
+				g.open(s, ios::out | ios::_Noreplace);
+				if(!g.is_open())
+				{  
+				while (!g.is_open()) 
+				{
+					select_number++;
+					s = "SELECT ALL_" + to_string(select_number) + ".txt";
+					g.open(s, ios::out | ios::_Noreplace);
+				}
+				}
 				cout << "SELECT ALL returned -> " << endl;
+				g << "SELECT ALL returned -> " << endl << endl;
 				for (int j = 0; j < list_tabele[i].getNr_coloane(); j++)
 				{
 					cout << "NUME COLOANA: " << list_tabele[i].getcol()[j].getNume() << endl;
+					g  << "NUME COLOANA: " << list_tabele[i].getcol()[j].getNume() << endl<<endl;
 					for (int k = 0; k < list_tabele[i].getcol()[j].getNb_values(); k++)
 					{
 
 						cout << list_tabele[i].getcol()[j].getValues()[k] << endl;
+						g << list_tabele[i].getcol()[j].getValues()[k] << endl;
 					}
 
 					cout << endl;
+					g << endl << endl;
 				}
 
 			}
@@ -471,6 +494,7 @@ public:
 		if (ok == 1)
 		{
 			cout << "Values from table " << getname() << " have been displayed" << endl;
+		
 		}
 
 		else
@@ -478,7 +502,12 @@ public:
 			cout << "Tabela: " << getname() << " nu exista in baza de date sau nu exista inregistrari" << endl;
 		}
 	}
-};
+
+	void create_raport() 
+	{
+		
+	}
+}; 
 
 class select_part : public comanda_select
 {
@@ -532,7 +561,6 @@ public:
 
 		else
 		{
-			//cout << "nr_select coloane -> coloanele din comandata SELECT nu sunt bine despartite de virgula" << endl;
 			return -1;
 		}
 

@@ -1,0 +1,10 @@
+DISPLAY RETURNED 
+
+Nume tabela : FACULTATI ( 3 coloane )
+
+COLOANE TABELA : 
+Nume coloana : NUME ||  Restrictii :  Type: CHARACTER  Size: 20  Default NULL 
+Nume coloana : ADRESA ||  Restrictii :  Type: VARCHAR  Size: 20  Default NULL 
+Nume coloana : COD ||  Restrictii :  Type: INT2  Size: 4  Default "" 
+
+Table FACULTATI has been displayed 

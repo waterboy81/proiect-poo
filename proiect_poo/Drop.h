@@ -46,17 +46,52 @@ public:
 		}
 	}
 
+	void raport_display(Table t) 
+	{	
+		string s = getname();
+		ofstream g;
+		g.open(s + "_display.txt", ios::out|ios::ate);
+		if (g.is_open()) 
+		{
+			g << "DISPLAY RETURNED "<<endl<<endl;
+			g << "Nume tabela : "<< t.getNume_tabela()<<" ( "<<t.getNr_coloane()<<" coloane )"<<endl<<endl;
+			g << "COLOANE TABELA : " << endl; 
+			for (int i = 0; i < t.getNr_coloane(); i++) 
+			{
+				g <<"Nume coloana : "<< t.getcol()[i].getNume()<<" ||  Restrictii : ";
+					g <<" Type: "<< t.getcol()[i].getRestrictii().getType()<<" ";
+					g <<" Size: "<< t.getcol()[i].getRestrictii().getSize() << " ";
+					g <<" Default " << t.getcol()[i].getRestrictii().getVal_predefinita() << " "<<endl;
+			}
+			g << endl << "Table " << this->getname() << " has been displayed " << endl;
+		}
+	}
+
+	bool corect(vector <Table> lista_tabele)
+	{
+		for (int i = 0; i < lista_tabele.size(); i++)
+		{
+			if (lista_tabele[i].getNume_tabela().compare(this->getname()) == 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 	void display_table(vector <Table> lista_tabele)
 	{
 		int ok = 0;
 		for (int i = 0; i < lista_tabele.size(); i++)
 		{
-			if (lista_tabele[i].getNume_tabela().compare(this->getname()) == 0)
+			if (corect(lista_tabele)==1)
 			{
 				cout << lista_tabele[i];
 				cout << endl << "Table " << this->getname() << " has been displayed " << endl;
 				cout << "___________________________________" << endl << endl;
+				raport_display(lista_tabele[i]);
 				ok = 1;
 			}
 		}

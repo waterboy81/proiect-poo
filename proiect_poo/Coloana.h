@@ -185,7 +185,7 @@ public:
 ostream& operator<<(ostream& out, coloana c)
 {
 	cout << "Numele coloanei= ";
-	out << c.nume;
+	out << c.nume<< " ";
 	out << c.restrictii;
 	return out;
 }
