@@ -486,10 +486,13 @@ public:
 
 					cout << endl;
 					g << endl << endl;
+				
 				}
 
+				g.close();
 			}
 		}
+
 
 		if (ok == 1)
 		{
@@ -609,7 +612,7 @@ public:
 
 	void select(vector <Table>& list_tabele)
 	{
-		int ok = 0;
+		int ok = 0; int a=1;
 		if (s_coloane != NULL)
 		{
 			for (unsigned int i = 0; i < list_tabele.size(); i++)
@@ -617,34 +620,53 @@ public:
 				if (list_tabele[i].getNume_tabela() == getname() && exista_coloane(list_tabele[i].getcol(), list_tabele[i].getNr_coloane()) == 1)
 				{
 					ok = 1;
-					cout << "SELECT returned -> " << endl;
-					for (int t = 0; t < nr_select; t++)
+					ofstream g;
+					string s = "SELECT_" + to_string(gets_number()) + ".txt";
+					g.open(s, ios::out | ios::_Noreplace);
+					if (!g.is_open())
 					{
-						for (int j = 0; j < list_tabele[i].getNr_coloane(); j++)
+						while (!g.is_open())
 						{
-							if (list_tabele[i].getcol()[j].getNume() == s_coloane[t])
-							{
-								cout << "NUME COLOANA: " << list_tabele[i].getcol()[j].getNume() << endl;
-								for (int k = 0; k < list_tabele[i].getcol()[j].getNb_values(); k++)
-								{
-									cout << list_tabele[i].getcol()[j].getValues()[k] << endl;
-								}
-
-								cout << endl;
-							}
+							a += gets_number();
+							s = "SELECT_" + to_string(a) + ".txt";
+							g.open(s, ios::out | ios::_Noreplace);
 						}
 					}
+						cout << "SELECT returned -> " << endl;
+						g << "SELECT returned -> " << endl << endl;
+						for (int t = 0; t < nr_select; t++)
+						{
+							for (int j = 0; j < list_tabele[i].getNr_coloane(); j++)
+							{
+								if (list_tabele[i].getcol()[j].getNume() == s_coloane[t])
+								{
+									cout << "NUME COLOANA: " << list_tabele[i].getcol()[j].getNume() << endl;
+									g << "NUME COLOANA: " << list_tabele[i].getcol()[j].getNume() << endl;
+									for (int k = 0; k < list_tabele[i].getcol()[j].getNb_values(); k++)
+									{
+										cout << list_tabele[i].getcol()[j].getValues()[k] << endl;
+										g << list_tabele[i].getcol()[j].getValues()[k] << endl;
+									}
+
+									cout << endl;
+									g << endl << endl;
+								}
+							}
+						
+						}
+
+						g.close();
 				}
 			}
-		}
 
-		if (ok == 1)
-		{
-			cout << "Values from table " << getname() << " have been desplayed" << endl;
-		}
+			if (ok == 1)
+			{
+				cout << "Values from table " << getname() << " have been desplayed" << endl;
+			}
 
-		else
-			cout << "SELECT nu a putut identifica comenzile / tabela in baza de date" << endl;
+			else
+				cout << "SELECT nu a putut identifica comenzile / tabela in baza de date" << endl;
+		}
 	}
 
 	~select_part()
