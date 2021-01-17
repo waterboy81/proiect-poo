@@ -1,4 +1,6 @@
 ﻿  Main.cpp
+C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Table.h(194,13): warning C4018: '<': signed/unsigned mismatch
+C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Comanda.h(234,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Drop.h(26,22): warning C4018: '<': signed/unsigned mismatch
 C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Drop.h(72,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\pc\Documents\GitHub\proiect-poo\proiect_poo\Drop.h(87,21): warning C4018: '<': signed/unsigned mismatch

@@ -90,6 +90,13 @@ int main(int argc, char* argv[])
 				comanda_binary e(c);
 				e.read(list_tabele);
 			}
+
+			if (cmd.getnb() == 11)
+			{
+				comanda_import e(c);
+				e.setvalues(list_tabele);
+				e.import(list_tabele);
+			}
 		}
 	}
 	else { cout << "Nu s-a putut deschide fisierul." << endl; }

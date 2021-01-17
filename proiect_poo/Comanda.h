@@ -69,10 +69,10 @@ public:
 
 	void identificare_comanda()
 	{
-		const char* commands[11] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "CREATE INDEX ", "DROP INDEX ", "INSERT INTO ", "DELETE FROM ","SELECT ALL FROM ", "SELECT ", "UPDATE ", "BINARY CREATE " };
+		const char* commands[12] = { "CREATE TABLE ","DROP TABLE ", "DISPLAY TABLE ", "CREATE INDEX ", "DROP INDEX ", "INSERT INTO ", "DELETE FROM ","SELECT ALL FROM ", "SELECT ", "UPDATE ", "BINARY CREATE ", "IMPORT " };
 		size_t position = -1;  int ok = 0; int val = -1;
 
-		for (int i = 0; i < 11 && ok == 0; i++)
+		for (int i = 0; i < 12 && ok == 0; i++)
 		{
 			string define = (char*)commands[i];
 			position = getcmd().find(define);
@@ -184,7 +184,15 @@ public:
 				size_t position = comanda_introdusa.find(cmd);
 				str2 = comanda_introdusa.substr(position + cmd.length());
 				this->nume_tabela = str2;
+			}
 
+			if (getnb() == 11)
+			{
+				string cmd = "IMPORT ";
+				size_t position = getcmd().find(cmd);
+				str2 = getcmd().substr(position + cmd.length());
+				str3 = str2.substr(0, str2.find(' '));
+				setname(str3);
 			}
 		}
 
@@ -193,6 +201,73 @@ public:
 			cout << "Comanda introdusa gresit ." << endl;
 		}
 
+	}
+
+};
+
+class comanda_import : public comanda 
+{
+private:
+	string name_csv;
+	vector <string> values_imported;
+public: 
+	comanda_import(string cmd) : comanda(cmd)
+	{
+		name_csv = n_fisier();
+	}
+
+	string n_fisier() 
+	{
+		string n = getname() + " "; string c = getcmd();
+		n = c.substr(c.find(n)+n.length(), c.length());
+		n.erase(remove(n.begin(), n.end(), ' '), n.end());
+		return n;
+	}
+
+	void setvalues(vector<Table>&list) 
+	{
+		extract(list);
+	}
+
+	int corect(vector<Table> list) 
+	{
+		for (int i = 0; i < list.size(); i++) 
+		{
+			if (list[i].getNume_tabela() == getname()) 
+			{
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	void extract(vector<Table> list) 
+	{
+		fstream f(name_csv); string buffer; string to_add;
+		int size = corect(list);
+		if (f.is_open()&& size!=-1) 
+		{
+			getline(f, buffer);
+			while (!f.eof())
+			{
+				getline(f, buffer); //full row
+				buffer = buffer + ",";
+				for (int i = 0; i < list[size].getNr_coloane(); i++) 
+				{
+					to_add = buffer.substr(0, buffer.find_first_of(","));
+					values_imported.push_back(to_add);
+					buffer = buffer.substr(buffer.find_first_of(",")+1,buffer.length()-to_add.length()+1);
+				}
+
+			}		
+		}
+	}
+
+	void import(vector <Table> &list) 
+	{
+		int index = corect(list);
+		list[index].set_csv(values_imported);
 	}
 
 };
@@ -247,7 +322,7 @@ public:
 			}
 
 			Table a(s, bb.size() - 1, list, bb);
-
+			cout << "Table " << a.getNume_tabela() << " created." << endl;
 			f.close();
 		}
 		else

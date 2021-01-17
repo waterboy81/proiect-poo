@@ -185,6 +185,25 @@ public:
 		}
 	}
 
+	void set_csv(vector<string> values) 
+	{
+		if (values.size() % nr_coloane == 0)
+		{
+			int j = 0;
+			while (j < values.size())
+			{
+				for (int i = 0; i < nr_coloane; i++)
+				{
+					coloane[i].add_values(values[j], 1);
+					j++;
+				}
+			}
+		}
+
+		else
+			cout << "Fisierul csv nu corespunde definitiei tabelei." << endl;
+	}
+
 	void setNume_tabela(string nume_tabela)
 	{
 		this->nume_tabela = nume_tabela;
