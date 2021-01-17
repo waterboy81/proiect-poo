@@ -1,0 +1,9 @@
+DISPLAY RETURNED 
+
+Nume tabela : REGIUNI ( 2 coloane )
+
+COLOANE TABELA : 
+Nume coloana : 1 ||  Restrictii :  Type: 3  Size: 4  Default 6 
+Nume coloana : 4 ||  Restrictii :  Type: 5  Size: 6  Default 7 
+
+Table REGIUNI has been displayed 

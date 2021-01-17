@@ -270,6 +270,32 @@ public:
 		list[index].set_csv(values_imported);
 	}
 
+	void getfile(vector <Table>& list) 
+	{
+		int index = corect(list);
+		string nume_fisier = list[index].getNume_tabela() + "_data.bin";
+		ofstream f(nume_fisier, ios::out | ios::binary | ios::app);
+		int l;
+		if (!f.is_open())
+			cout << "Nu se poate deschide fisierul " << nume_fisier << endl;
+		else
+		{
+				for (int j = 0; j < list[index].getcol()[0].getNb_values(); j++) 
+				{
+					for (int i = 0; i < list[index].getNr_coloane(); i++)
+					{
+					
+					l = list[index].getcol()[i].getValues()[j].length();
+					f.write((char*)&l, sizeof(l));
+					l = l + 1;
+					f.write(list[index].getcol()[i].getValues()[i].c_str(), l);
+
+					}
+				}
+		}
+		f.close();
+	}
+
 };
 
 class comanda_binary : public comanda
@@ -291,7 +317,7 @@ public:
 			s = aux; //nume tabela
 			delete[] aux;
 
-			while (!f.eof()) //eof imi da fail sau e corput binarul , deci serializarea nu a generat un binar bun
+			while (!f.eof()) 
 			{
 				f.read((char*)&l, sizeof(l));
 				aux = new char[l + 1];
